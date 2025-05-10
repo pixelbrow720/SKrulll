@@ -9,7 +9,48 @@
 [![Docker](https://img.shields.io/badge/Docker-Supported-blue)](https://www.docker.com/)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-<img src="static/img/logo.png" alt="SKrulll Logo" width="200"/>
+<svg width="200" height="200" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <title>SKrulll Logo</title>
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#007bff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00bfff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#28a745;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#20c997;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Core 'S' like structure with Orchestration hints -->
+  <g transform="translate(50 50) scale(0.8)">
+    <!-- Main 'S' like shape - Blue Gradient -->
+    <path d="M 20 -30
+             Q 0 -30 -15 -15
+             Q -30 0 -15 15
+             Q 0 30 20 30
+             L 25 30
+             Q 5 30 -10 15
+             Q -25 0 -10 -15
+             Q 5 -30 25 -30
+             Z" 
+          fill="url(#grad1)" stroke="#0056b3" stroke-width="2"/>
+
+    <!-- Connecting/Orchestrating elements - Greenish Gradient -->
+    <circle cx="-15" cy="-15" r="5" fill="url(#grad2)" stroke="#198754" stroke-width="1"/>
+    <circle cx="20" cy="30" r="5" fill="url(#grad2)" stroke="#198754" stroke-width="1"/>
+    <circle cx="20" cy="-30" r="4" fill="url(#grad2)" stroke="#198754" stroke-width="1"/>
+    
+    <!-- Lines suggesting connection/flow -->
+    <line x1="-15" y1="-15" x2="0" y2="0" stroke="#007bff" stroke-width="1.5"/>
+    <line x1="20" y1="30" x2="0" y2="0" stroke="#007bff" stroke-width="1.5"/>
+    <line x1="20" y1="-30" x2="0" y2="0" stroke="#007bff" stroke-width="1.5"/>
+
+    <!-- Central OSINT 'eye' / Focus Point (Subtle) -->
+    <circle cx="0" cy="0" r="8" fill="none" stroke="white" stroke-width="1.5"/>
+    <circle cx="0" cy="0" r="3" fill="white"/>
+  </g>
+</svg>
 
 *Unify, Orchestrate, Secure*
 

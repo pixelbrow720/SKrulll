@@ -1,5 +1,5 @@
-# CyberOps Docker Compose Configuration
-# This file defines the core infrastructure components for the CyberOps orchestrator
+# SKrulll Docker Compose Configuration
+# This file defines the core infrastructure components for the SKrulll orchestrator
 
 version: '3.8'
 

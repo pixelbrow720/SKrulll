@@ -1,5 +1,5 @@
 """
-Service Enumerator module for the CyberOps Orchestrator.
+Service Enumerator module for the SKrulll Orchestrator.
 
 This module provides functionality for enumerating services, protocols, and
 identifying software versions and potential vulnerabilities.
@@ -92,8 +92,8 @@ VERSION_PATTERNS = {
 
 # Security probe payloads for each protocol
 PROBE_PAYLOADS = {
-    'HTTP': b'GET / HTTP/1.1\r\nHost: target\r\nUser-Agent: CyberOps/1.0\r\n\r\n',
-    'HTTPS': b'GET / HTTP/1.1\r\nHost: target\r\nUser-Agent: CyberOps/1.0\r\n\r\n',
+    'HTTP': b'GET / HTTP/1.1\r\nHost: target\r\nUser-Agent: SKrulll/1.0\r\n\r\n',
+    'HTTPS': b'GET / HTTP/1.1\r\nHost: target\r\nUser-Agent: SKrulll/1.0\r\n\r\n',
     'FTP': b'',  # Empty payload, FTP server sends banner upon connection
     'SSH': b'',  # Empty payload, SSH server sends banner upon connection
     'SMTP': b'EHLO cyberops.local\r\n',

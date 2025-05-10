@@ -1,5 +1,5 @@
 """
-MongoDB client for the CyberOps Orchestrator.
+MongoDB client for the SKrulll Orchestrator.
 
 This module provides a client for interacting with MongoDB databases,
 handling connection, queries, and result processing.

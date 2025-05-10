@@ -2,7 +2,7 @@
 Python Bindings for the Rust Network Mapper
 
 This module provides a Python interface to the high-speed Rust network mapper,
-integrating with the CyberOps Orchestrator and allowing scanning of network
+integrating with the SKrulll Orchestrator and allowing scanning of network
 ranges and discovery of active hosts.
 """
 import json

@@ -1,5 +1,5 @@
 /**
- * CyberOps Dashboard - Main JavaScript
+ * SKrulll Dashboard - Main JavaScript
  * Provides dynamic functionality for the dashboard
  */
 
@@ -7,7 +7,7 @@
 const app = {
     // Initialize the application
     init: function() {
-        console.log('Initializing CyberOps Dashboard...');
+        console.log('Initializing SKrulll Dashboard...');
         
         // Initialize Feather icons
         this.initIcons();
@@ -24,7 +24,7 @@ const app = {
         // Initialize tooltips and popovers
         this.initTooltips();
         
-        console.log('CyberOps Dashboard initialized');
+        console.log('SKrulll Dashboard initialized');
     },
     
     // Initialize Feather icons

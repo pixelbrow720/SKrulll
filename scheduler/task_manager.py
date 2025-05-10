@@ -1,5 +1,5 @@
 """
-Task Scheduler for the CyberOps Orchestrator.
+Task Scheduler for the SKrulll Orchestrator.
 
 This module provides the core functionality for scheduling and managing tasks,
 including interval-based and cron-based tasks.

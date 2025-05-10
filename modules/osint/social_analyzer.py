@@ -1,5 +1,5 @@
 """
-Advanced Social Media Analyzer module for the CyberOps Orchestrator.
+Advanced Social Media Analyzer module for the SKrulll Orchestrator.
 
 This module provides high-level functionality for analyzing social media data,
 including sentiment analysis, network graph visualization, and content analysis.
@@ -1299,7 +1299,7 @@ if __name__ == "__main__":
         'twitter_access_token_secret': os.environ.get('TWITTER_ACCESS_TOKEN_SECRET'),
         'reddit_client_id': os.environ.get('REDDIT_CLIENT_ID'),
         'reddit_client_secret': os.environ.get('REDDIT_CLIENT_SECRET'),
-        'reddit_user_agent': os.environ.get('REDDIT_USER_AGENT', 'CyberOps OSINT Analyzer/1.0.0'),
+        'reddit_user_agent': os.environ.get('REDDIT_USER_AGENT', 'SKrulll OSINT Analyzer/1.0.0'),
         'elasticsearch_hosts': os.environ.get('ELASTICSEARCH_HOSTS', 'http://localhost:9200').split(','),
         'elasticsearch_username': os.environ.get('ELASTICSEARCH_USERNAME'),
         'elasticsearch_password': os.environ.get('ELASTICSEARCH_PASSWORD')

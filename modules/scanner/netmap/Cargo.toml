@@ -2,7 +2,7 @@
 name = "network_mapper"
 version = "0.1.0"
 edition = "2021"
-authors = ["CyberOps Team"]
+authors = ["SKrulll Team"]
 description = "High-speed network discovery and mapping tool"
 
 [lib]

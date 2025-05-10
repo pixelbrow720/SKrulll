@@ -1,5 +1,5 @@
 /**
- * API module for CyberOps Dashboard
+ * API module for SKrulll Dashboard
  * Handles API communication and data fetching
  */
 

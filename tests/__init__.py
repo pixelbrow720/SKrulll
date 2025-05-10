@@ -1,4 +1,4 @@
 
 """
-Tests package for the CyberOps framework.
+Tests package for the SKrulll framework.
 """

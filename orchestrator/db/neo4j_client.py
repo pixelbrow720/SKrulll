@@ -1,5 +1,5 @@
 """
-Neo4j client for the CyberOps Orchestrator.
+Neo4j client for the SKrulll Orchestrator.
 
 This module provides a client for interacting with Neo4j graph databases,
 handling connection, queries, and graph operations.

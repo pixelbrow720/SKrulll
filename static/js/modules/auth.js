@@ -1,5 +1,5 @@
 /**
- * Authentication module for CyberOps Dashboard
+ * Authentication module for SKrulll Dashboard
  * Handles user authentication, login, logout, and session management
  */
 

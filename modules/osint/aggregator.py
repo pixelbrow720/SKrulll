@@ -1,5 +1,5 @@
 """
-OSINT Aggregator module for the CyberOps Orchestrator.
+OSINT Aggregator module for the SKrulll Orchestrator.
 
 This module provides functionality for aggregating data from various OSINT sources
 including social media platforms, WHOIS data, and web scraping, with standardized output.
@@ -274,7 +274,7 @@ class OsintAggregator:
                 lambda: requests.get(
                     url,
                     headers={
-                        'User-Agent': 'CyberOps OSINT Scraper/1.0.0',
+                        'User-Agent': 'SKrulll OSINT Scraper/1.0.0',
                         'Accept': 'text/html,application/xhtml+xml,application/xml'
                     },
                     timeout=10
@@ -762,7 +762,7 @@ if __name__ == "__main__":
         'twitter_access_token_secret': os.environ.get('TWITTER_ACCESS_TOKEN_SECRET'),
         'reddit_client_id': os.environ.get('REDDIT_CLIENT_ID'),
         'reddit_client_secret': os.environ.get('REDDIT_CLIENT_SECRET'),
-        'reddit_user_agent': os.environ.get('REDDIT_USER_AGENT', 'CyberOps OSINT Aggregator/1.0.0'),
+        'reddit_user_agent': os.environ.get('REDDIT_USER_AGENT', 'SKrulll OSINT Aggregator/1.0.0'),
         'elasticsearch_hosts': os.environ.get('ELASTICSEARCH_HOSTS', 'http://localhost:9200').split(','),
         'elasticsearch_username': os.environ.get('ELASTICSEARCH_USERNAME'),
         'elasticsearch_password': os.environ.get('ELASTICSEARCH_PASSWORD')

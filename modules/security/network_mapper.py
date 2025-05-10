@@ -1,5 +1,5 @@
 """
-Network Mapper module for the CyberOps Orchestrator.
+Network Mapper module for the SKrulll Orchestrator.
 
 This module provides a high-level interface for the Network Mapper, which combines
 Rust and Python for high-speed network discovery and mapping, with integration

@@ -1,5 +1,5 @@
 """
-OSINT (Open Source Intelligence) modules for the CyberOps Orchestrator.
+OSINT (Open Source Intelligence) modules for the SKrulll Orchestrator.
 
 This package provides modules for gathering intelligence from open sources,
 such as domain reconnaissance, social media analysis, and other OSINT techniques.

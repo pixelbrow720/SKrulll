@@ -1,5 +1,5 @@
 /**
- * UI module for CyberOps Dashboard
+ * UI module for SKrulll Dashboard
  * Handles UI elements, animations, and visual effects
  */
 

@@ -1,5 +1,5 @@
 
-# Optimized Python Dockerfile for CyberOps
+# Optimized Python Dockerfile for SKrulll
 
 # Build stage
 FROM python:3.10-slim AS builder

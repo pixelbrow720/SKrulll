@@ -1,5 +1,5 @@
 """
-Configuration management for the CyberOps Orchestrator.
+Configuration management for the SKrulll Orchestrator.
 
 This module provides functionality for loading and managing configuration
 settings from environment variables, configuration files, and defaults.
@@ -78,7 +78,7 @@ DEFAULT_CONFIG = {
             },
             "vulnerability_scanner": {
                 "timeout": 30,
-                "user_agent": "CyberOps Vulnerability Scanner v0.1.0"
+                "user_agent": "SKrulll Vulnerability Scanner v0.1.0"
             }
         }
     },

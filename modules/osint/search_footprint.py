@@ -1,5 +1,5 @@
 """
-Search Engine Footprint module for the CyberOps Orchestrator.
+Search Engine Footprint module for the SKrulll Orchestrator.
 
 This module provides functionality for analyzing a target's digital footprint
 using search engines, Google dorks, and other search techniques.
@@ -661,7 +661,7 @@ class SearchFootprint:
             # Attempt to get headers (without downloading full content)
             try:
                 headers = {
-                    "User-Agent": "CyberOps OSINT Tool/1.0.0 (Security Check)"
+                    "User-Agent": "SKrulll OSINT Tool/1.0.0 (Security Check)"
                 }
                 
                 response = requests.head(

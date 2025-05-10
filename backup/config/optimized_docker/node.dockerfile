@@ -1,5 +1,5 @@
 
-# Optimized Node.js Dockerfile for CyberOps
+# Optimized Node.js Dockerfile for SKrulll
 
 # Build stage
 FROM node:18-slim AS builder

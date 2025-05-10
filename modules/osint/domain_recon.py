@@ -1,5 +1,5 @@
 """
-Domain Reconnaissance module for the CyberOps Orchestrator.
+Domain Reconnaissance module for the SKrulll Orchestrator.
 
 This module provides functionality for gathering information about a domain,
 including WHOIS data, DNS records, and subdomain discovery.

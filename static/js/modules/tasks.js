@@ -1,5 +1,5 @@
 /**
- * Tasks module for CyberOps Dashboard
+ * Tasks module for SKrulll Dashboard
  * Handles task scheduling, management, and status updates
  */
 

@@ -1,5 +1,5 @@
 """
-Logging configuration for the CyberOps Orchestrator.
+Logging configuration for the SKrulll Orchestrator.
 
 This module sets up logging for the application, including console and file logging,
 log rotation, and log formatting.

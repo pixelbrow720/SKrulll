@@ -1,5 +1,5 @@
-# CyberOps Docker Network Configuration
-# This file defines the detailed network architecture for the CyberOps system with
+# SKrulll Docker Network Configuration
+# This file defines the detailed network architecture for the SKrulll system with
 # optimized security and performance settings.
 #
 # USAGE INSTRUCTIONS:
@@ -44,7 +44,7 @@
 
 version: '3.8'
 
-# Define the networks for the CyberOps system
+# Define the networks for the SKrulll system
 networks:
   # Frontend network for user-facing services
   cyberops-frontend:

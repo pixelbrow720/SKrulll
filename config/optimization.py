@@ -1,6 +1,6 @@
 
 """
-System optimization utilities for CyberOps.
+System optimization utilities for SKrulll.
 
 This module provides utilities for optimizing system resources, database queries,
 and application performance. It includes functions for:
@@ -11,7 +11,7 @@ and application performance. It includes functions for:
 - Docker image optimization
 - System performance reporting
 
-These utilities help ensure optimal performance of the CyberOps platform
+These utilities help ensure optimal performance of the SKrulll platform
 across various deployment environments and workloads.
 """
 import logging

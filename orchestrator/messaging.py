@@ -1,5 +1,5 @@
 """
-Messaging system for the CyberOps Orchestrator.
+Messaging system for the SKrulll Orchestrator.
 
 This module provides a unified interface for working with message broker systems
 like RabbitMQ and Kafka, allowing different components to communicate asynchronously.

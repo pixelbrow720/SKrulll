@@ -1,5 +1,5 @@
 /**
- * Core module for CyberOps Dashboard
+ * Core module for SKrulll Dashboard
  * Contains core functionality and initialization
  */
 

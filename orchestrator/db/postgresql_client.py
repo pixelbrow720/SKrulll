@@ -1,5 +1,5 @@
 """
-PostgreSQL client for the CyberOps Orchestrator.
+PostgreSQL client for the SKrulll Orchestrator.
 
 This module provides a client for interacting with PostgreSQL databases,
 handling connection pooling, query execution, and result processing.

@@ -1,5 +1,5 @@
 """
-Social Media OSINT Utilities module for the CyberOps Orchestrator.
+Social Media OSINT Utilities module for the SKrulll Orchestrator.
 
 This module provides low-level utilities for gathering basic information from social media
 platforms, including username searches and simple profile checks.

@@ -1,5 +1,5 @@
 """
-Port Scanner module for the CyberOps Orchestrator.
+Port Scanner module for the SKrulll Orchestrator.
 
 This module provides functionality for scanning network ports on a target,
 detecting open services, and fingerprinting.

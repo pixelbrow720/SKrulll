@@ -1,5 +1,5 @@
 """
-Elasticsearch client for the CyberOps Orchestrator.
+Elasticsearch client for the SKrulll Orchestrator.
 
 This module provides a client for interacting with Elasticsearch,
 handling indexing, searching, and aggregating data.

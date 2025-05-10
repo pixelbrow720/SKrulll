@@ -1,7 +1,7 @@
 
 #!/usr/bin/env python3
 """
-Backup and restore script for CyberOps databases.
+Backup and restore script for SKrulll databases.
 """
 import argparse
 import logging
@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 logger = logging.getLogger(__name__)
 
 class DatabaseManager:
-    """Manages backup and restore operations for CyberOps databases"""
+    """Manages backup and restore operations for SKrulll databases"""
     
     def __init__(self, backup_dir: str = 'backups', env_file: str = '.env'):
         """Initialize database manager"""
@@ -565,7 +565,7 @@ class DatabaseManager:
 
 def main():
     """Main entry point for backup/restore script"""
-    parser = argparse.ArgumentParser(description='CyberOps Database Backup and Restore')
+    parser = argparse.ArgumentParser(description='SKrulll Database Backup and Restore')
     subparsers = parser.add_subparsers(dest='command', help='Command to execute')
     
     # Backup command

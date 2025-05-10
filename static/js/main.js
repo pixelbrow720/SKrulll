@@ -1,5 +1,5 @@
 /**
- * CyberOps Dashboard Main JavaScript
+ * SKrulll Dashboard Main JavaScript
  * Entry point for the application
  */
 
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Set up event listeners for forms
   setupFormEventListeners();
   
-  console.log('CyberOps Dashboard initialized');
+  console.log('SKrulll Dashboard initialized');
 });
 
 /**

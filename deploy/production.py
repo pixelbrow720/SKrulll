@@ -1,9 +1,9 @@
 
 #!/usr/bin/env python3
 """
-Production deployment script for CyberOps.
+Production deployment script for SKrulll.
 
-This script manages the deployment of CyberOps components to a production environment.
+This script manages the deployment of SKrulll components to a production environment.
 """
 import argparse
 import logging
@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 logger = logging.getLogger(__name__)
 
 class DeploymentManager:
-    """Manages the deployment of CyberOps components"""
+    """Manages the deployment of SKrulll components"""
     
     def __init__(self, config_path: str, env_file: str = '.env.production'):
         """Initialize deployment manager"""
@@ -411,7 +411,7 @@ class DeploymentManager:
     
     def deploy(self) -> bool:
         """Run the full deployment process"""
-        logger.info("Starting CyberOps deployment")
+        logger.info("Starting SKrulll deployment")
         
         # Check requirements
         if not self.check_requirements():
@@ -448,7 +448,7 @@ class DeploymentManager:
 
 def main():
     """Main entry point for deployment script"""
-    parser = argparse.ArgumentParser(description='CyberOps Production Deployment')
+    parser = argparse.ArgumentParser(description='SKrulll Production Deployment')
     parser.add_argument('--config', type=str, default='config/production.json', help='Path to configuration file')
     parser.add_argument('--env-file', type=str, default='.env.production', help='Path to environment file')
     parser.add_argument('--skip-backup', action='store_true', help='Skip database backup')

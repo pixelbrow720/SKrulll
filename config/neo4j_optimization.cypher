@@ -1,5 +1,5 @@
 
-// Neo4j database optimizations for CyberOps
+// Neo4j database optimizations for SKrulll
 // Optimized version based on recommendations
 
 //=============================================================================

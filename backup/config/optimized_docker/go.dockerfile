@@ -1,5 +1,5 @@
 
-# Optimized Go Dockerfile for CyberOps
+# Optimized Go Dockerfile for SKrulll
 
 # Build stage
 FROM golang:1.20-alpine AS builder

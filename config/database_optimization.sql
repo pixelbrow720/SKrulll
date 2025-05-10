@@ -1,5 +1,5 @@
 
--- PostgreSQL database optimizations for CyberOps
+-- PostgreSQL database optimizations for SKrulll
 
 -- Add indexes to improve vulnerability search performance
 CREATE INDEX IF NOT EXISTS idx_vuln_severity ON vulnerabilities(severity);

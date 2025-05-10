@@ -1,0 +1,38 @@
+[package]
+name = "network_mapper"
+version = "0.1.0"
+edition = "2021"
+authors = ["CyberOps Team"]
+description = "High-speed network discovery and mapping tool"
+
+[lib]
+name = "network_mapper"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+tokio = { version = "1.22.0", features = ["full"] }
+pnet = "0.31.0"
+ipnetwork = "0.18.0"
+structopt = "0.3.26"
+serde = { version = "1.0.147", features = ["derive"] }
+serde_json = "1.0.87"
+thiserror = "1.0.37"
+log = "0.4.17"
+env_logger = "0.9.3"
+rayon = "1.5.3"
+cidr = "0.2.1"
+futures = "0.3.25"
+async-trait = "0.1.58"
+dashmap = "5.4.0"
+
+# For Python bindings
+pyo3 = { version = "0.17.3", features = ["extension-module"], optional = true }
+
+[features]
+default = []
+python = ["pyo3"]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

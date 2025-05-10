@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Page Not Found{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="display-4 fw-bold">404</h1>
+            <h2 class="fs-4 text-secondary">Page Not Found</h2>
+            <p class="lead my-4">
+                The page you are looking for doesn't exist or has been moved.
+            </p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="var(--bs-primary)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search mx-auto mb-4">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4 gap-3">
+                    <i data-feather="home"></i> Go to Homepage
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-lg px-4">
+                    <i data-feather="activity"></i> Go to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        feather.replace();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,355 @@
+# CyberOps Docker Compose Configuration
+# This file defines the core infrastructure components for the CyberOps orchestrator
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14-alpine
+    container_name: cyberops-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${PGUSER:-postgres}
+      POSTGRES_PASSWORD: ${PGPASSWORD:-cyberops}
+      POSTGRES_DB: ${PGDATABASE:-cyberops}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - cyberops-backend
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${PGUSER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:5.0
+    container_name: cyberops-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD:-cyberops}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE:-cyberops}
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - cyberops-backend
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/cyberops --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    container_name: cyberops-elasticsearch
+    restart: unless-stopped
+    environment:
+      - node.name=cyberops-es01
+      - cluster.name=cyberops-es-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - cyberops-backend
+    healthcheck:
+      test: curl -s http://localhost:9200 >/dev/null || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Neo4j Graph Database
+  neo4j:
+    image: neo4j:4.4
+    container_name: cyberops-neo4j
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: ${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:-cyberops}
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    ports:
+      - "7474:7474"  # Browser interface
+      - "7687:7687"  # Bolt protocol
+    networks:
+      - cyberops-backend
+    healthcheck:
+      test: wget -q --spider http://localhost:7474 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    container_name: cyberops-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"    # AMQP protocol
+      - "15672:15672"  # Management interface
+    networks:
+      - cyberops-backend
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Optional: Kafka Message Broker (Commented out by default)
+  # Uncomment to use Kafka instead of or alongside RabbitMQ
+  # kafka:
+  #   image: confluentinc/cp-kafka:7.0.1
+  #   container_name: cyberops-kafka
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - zookeeper
+  #   ports:
+  #     - "9092:9092"
+  #   environment:
+  #     KAFKA_BROKER_ID: 1
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  #   networks:
+  #     - cyberops-backend
+  #   healthcheck:
+  #     test: nc -z localhost 9092 || exit 1
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+  # Optional: Zookeeper (Required for Kafka)
+  # zookeeper:
+  #   image: confluentinc/cp-zookeeper:7.0.1
+  #   container_name: cyberops-zookeeper
+  #   restart: unless-stopped
+  #   environment:
+  #     ZOOKEEPER_CLIENT_PORT: 2181
+  #     ZOOKEEPER_TICK_TIME: 2000
+  #   ports:
+  #     - "2181:2181"
+  #   networks:
+  #     - cyberops-backend
+  #   healthcheck:
+  #     test: echo srvr | nc localhost 2181 || exit 1
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+  # Optional: ELK Stack for logging
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:7.17.0
+  #   container_name: cyberops-kibana
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5601:5601"
+  #   environment:
+  #     ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+  #   depends_on:
+  #     - elasticsearch
+  #   networks:
+  #     - cyberops-backend
+  #   healthcheck:
+  #     test: curl -s http://localhost:5601 >/dev/null || exit 1
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+  # Main orchestrator service
+  orchestrator:
+    build:
+      context: ..
+      dockerfile: templates/docker/python.dockerfile
+    container_name: cyberops-orchestrator
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - mongodb
+      - elasticsearch
+      - neo4j
+      - rabbitmq
+    environment:
+      PGHOST: postgres
+      PGUSER: ${PGUSER:-postgres}
+      PGPASSWORD: ${PGPASSWORD:-cyberops}
+      PGDATABASE: ${PGDATABASE:-cyberops}
+      PGPORT: 5432
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_USERNAME: ${MONGODB_USERNAME:-admin}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD:-cyberops}
+      MONGODB_DATABASE: ${MONGODB_DATABASE:-cyberops}
+      ELASTICSEARCH_HOST: elasticsearch:9200
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USERNAME: ${NEO4J_USERNAME:-neo4j}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD:-cyberops}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      RABBITMQ_VHOST: ${RABBITMQ_VHOST:-/}
+      MESSAGING_TYPE: rabbitmq
+      # Enable TaskScheduler auto-start (default is True, but explicitly set for clarity)
+      SCHEDULER_AUTO_START: "true"
+    volumes:
+      - ../:/app
+    ports:
+      - "5000:5000"  # Web UI
+      - "8000:8000"  # API
+    networks:
+      - cyberops-frontend
+      - cyberops-backend
+    command: ["main.py", "webui", "--host", "0.0.0.0", "--port", "5000"]
+    # Note: The 'webui' command initializes the TaskScheduler with auto_start=True in cli.py,
+    # which starts a background thread for scheduled tasks. No additional command is needed
+    # for the scheduler to run alongside the web UI.
+      
+  # Message consumer service (optional, only needed if you want dedicated message consumers)
+  # Uncomment and configure as needed for dedicated message processing
+  # message-consumer:
+  #   build:
+  #     context: ..
+  #     dockerfile: templates/docker/python.dockerfile
+  #   container_name: cyberops-message-consumer
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - rabbitmq
+  #     - orchestrator
+  #   environment:
+  #     RABBITMQ_HOST: rabbitmq
+  #     RABBITMQ_PORT: 5672
+  #     RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+  #     RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+  #     RABBITMQ_VHOST: ${RABBITMQ_VHOST:-/}
+  #     MESSAGING_TYPE: rabbitmq
+  #   volumes:
+  #     - ../:/app
+  #   networks:
+  #     - cyberops-backend
+  #   # Example command to run a dedicated message consumer script
+  #   command: ["python", "-m", "orchestrator.message_consumer", "--topics", "tasks,results"]
+      
+  # Vulnerability Scanner service
+  vulnerability-scanner:
+    build:
+      context: ..
+      dockerfile: templates/docker/vulnerability-scanner.dockerfile
+    container_name: cyberops-vulnerability-scanner
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - orchestrator
+    environment:
+      PGHOST: postgres
+      PGUSER: ${PGUSER:-postgres}
+      PGPASSWORD: ${PGPASSWORD:-cyberops}
+      PGDATABASE: ${PGDATABASE:-cyberops}
+      PGPORT: 5432
+      DATABASE_URL: postgresql://${PGUSER:-postgres}:${PGPASSWORD:-cyberops}@postgres:5432/${PGDATABASE:-cyberops}
+      NUCLEI_TEMPLATES_PATH: /home/cyberops/.nuclei-templates
+    volumes:
+      - ../:/home/cyberops/app
+      - vulnerability_templates:/home/cyberops/.nuclei-templates
+      - vulnerability_reports:/home/cyberops/app/modules/vulnerability/reports
+    networks:
+      - cyberops-backend
+      - cyberops-scan-network
+    # No default command - will be triggered by the orchestrator
+
+  # Exploit Tester service
+  exploit-tester:
+    build:
+      context: ..
+      dockerfile: templates/docker/exploit-tester.dockerfile
+    container_name: cyberops-exploit-tester
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - orchestrator
+    environment:
+      PGHOST: postgres
+      PGUSER: ${PGUSER:-postgres}
+      PGPASSWORD: ${PGPASSWORD:-cyberops}
+      PGDATABASE: ${PGDATABASE:-cyberops}
+      PGPORT: 5432
+      DATABASE_URL: postgresql://${PGUSER:-postgres}:${PGPASSWORD:-cyberops}@postgres:5432/${PGDATABASE:-cyberops}
+      MSFRPC_HOST: localhost
+      MSFRPC_PORT: 55553
+      MSFRPC_USERNAME: msf
+      MSFRPC_PASSWORD: msf
+    volumes:
+      - ../:/home/cyberops/app
+      - exploit_reports:/home/cyberops/app/modules/vulnerability/exploiter/reports
+    ports:
+      - "55553:55553"  # Metasploit RPC server
+    networks:
+      - cyberops-backend
+      - cyberops-scan-network
+    # Expose capabilities to host network for container escape tests
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    # No default command - will be triggered by the orchestrator
+      
+  # API Security Tester service
+  api-tester:
+    build:
+      context: ..
+      dockerfile: templates/docker/api-tester.dockerfile
+    container_name: cyberops-api-tester
+    restart: unless-stopped
+    depends_on:
+      - orchestrator
+    volumes:
+      - ../modules/vulnerability/api_tester:/app
+      - api_reports:/app/reports
+    networks:
+      - cyberops-backend
+      - cyberops-scan-network
+    # No default command - will be triggered by the orchestrator
+
+networks:
+  cyberops-frontend:
+    driver: bridge
+  cyberops-backend:
+    driver: bridge
+    internal: true  # Backend network is not accessible from outside
+  cyberops-scan-network:
+    driver: bridge
+    # Not internal to allow direct internet access for scanning
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  elasticsearch_data:
+  neo4j_data:
+  neo4j_logs:
+  rabbitmq_data:
+  vulnerability_templates:
+  vulnerability_reports:
+  exploit_reports:
+  api_reports:

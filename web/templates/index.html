@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}CyberOps Dashboard - Home{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold mb-4">CyberOps Dashboard</h1>
+                <p class="lead mb-4">Advanced security operations platform for comprehensive threat detection, vulnerability assessment, and security monitoring.</p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg px-4 gap-3">
+                        <i data-feather="layout" class="me-2"></i> Dashboard
+                    </a>
+                    <a href="#features" class="btn btn-outline-secondary btn-lg px-4">
+                        <i data-feather="info" class="me-2"></i> Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="p-5 text-center bg-primary bg-opacity-10 rounded-3">
+                        <div class="d-inline-block p-3 mb-4 rounded-circle bg-primary bg-opacity-25">
+                            <i data-feather="shield" class="text-primary" width="48" height="48"></i>
+                        </div>
+                        <h2 class="fw-bold">Comprehensive Security Platform</h2>
+                        <p class="lead">All-in-one solution for security operations, vulnerability assessment, and threat monitoring.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="features" class="row g-4 py-5">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3 mb-3">
+                        <i data-feather="search"></i>
+                    </div>
+                    <h3 class="fs-5 fw-bold">OSINT Collection</h3>
+                    <p>Gather intelligence from open sources to identify potential security risks and vulnerabilities.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3 mb-3">
+                        <i data-feather="shield"></i>
+                    </div>
+                    <h3 class="fs-5 fw-bold">Vulnerability Assessment</h3>
+                    <p>Identify and analyze security vulnerabilities in your systems, networks, and applications.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3 mb-3">
+                        <i data-feather="activity"></i>
+                    </div>
+                    <h3 class="fs-5 fw-bold">Real-time Monitoring</h3>
+                    <p>Monitor your security posture in real-time with advanced analytics and visualization tools.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

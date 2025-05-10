@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}405 Method Not Allowed{% endblock %}
+
+{% block content %}
+<div class="container error-container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center p-5">
+          <div class="error-icon mb-4">
+            <i data-feather="slash" class="text-danger" width="64" height="64"></i>
+          </div>
+          <h1 class="display-4 mb-3">405</h1>
+          <h2 class="h4 mb-4">Method Not Allowed</h2>
+          <p class="lead mb-4">The request method is not supported for the requested resource.</p>
+          {% if error_message %}
+          <div class="alert alert-danger">
+            {{ error_message }}
+          </div>
+          {% endif %}
+          <div class="mt-5">
+            <a href="/" class="btn btn-primary me-2">
+              <i data-feather="home" class="me-2"></i> Go Home
+            </a>
+            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+              <i data-feather="arrow-left" class="me-2"></i> Go Back
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

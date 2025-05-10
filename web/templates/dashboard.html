@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+
+{% block title %}CyberOps Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Fix for CSS errors with template variables */
+    .progress-bar[role="progressbar"] {
+        transition: width 0.2s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h3 mb-0">Dashboard</h1>
+            <p class="text-muted">Welcome to your security operations center</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newTaskModal">
+                <i data-feather="plus" class="me-1"></i> New Task
+            </button>
+        </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card dashboard-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">System Status</h5>
+                    <button class="btn btn-sm btn-outline-secondary" id="refreshStatus">
+                        <i data-feather="refresh-cw"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="system-status">
+                                <div class="status-item">
+                                    <span class="status-label">CPU:</span>
+                                    <div class="progress" style="width: 120px; height: 8px;">
+                                        <div class="progress-bar cpu-usage-bar" role="progressbar" aria-valuenow="{{ system_status.cpu_usage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <span class="ms-2">{{ system_status.cpu_usage }}%</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Memory:</span>
+                                    <div class="progress" style="width: 120px; height: 8px;">
+                                        <div class="progress-bar memory-usage-bar" role="progressbar" aria-valuenow="{{ system_status.memory_usage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <span class="ms-2">{{ system_status.memory_usage }}%</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Disk:</span>
+                                    <div class="progress" style="width: 120px; height: 8px;">
+                                        <div class="progress-bar disk-usage-bar" role="progressbar" aria-valuenow="{{ system_status.disk_usage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <span class="ms-2">{{ system_status.disk_usage }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="system-status">
+                                {% for service in system_status.services %}
+                                <div class="status-item">
+                                    <span class="status-indicator {{ service.status }}"></span>
+                                    <span>{{ service.name }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4">
+                                    <h6 class="mb-0">Active Tasks</h6>
+                                    <h4 class="mb-0">{{ system_status.active_tasks }}</h4>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Queued Tasks</h6>
+                                    <h4 class="mb-0">{{ system_status.queued_tasks }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Tasks -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card dashboard-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Recent Tasks</h5>
+                    <a href="#" class="btn btn-sm btn-outline-secondary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Module</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in recent_tasks %}
+                                <tr data-task-id="{{ task.id }}">
+                                    <td>{{ task.name }}</td>
+                                    <td>{{ task.module }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="task-status {{ task.status }}"></span>
+                                            <span class="task-status-text">{{ task.status }}</span>
+                                            {% if task.status == 'running' and task.progress is defined %}
+                                            <div class="progress ms-2" style="width: 60px; height: 5px;">
+                                                <div class="progress-bar task-progress-bar" role="progressbar" data-progress="{{ task.progress }}" aria-valuenow="{{ task.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <small class="ms-1">{{ task.progress }}%</small>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>{{ task.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="#" class="btn btn-outline-secondary view-task" data-task-id="{{ task.id }}">
+                                                <i data-feather="eye" class="feather-sm"></i>
+                                            </a>
+                                            {% if task.status == 'scheduled' %}
+                                            <a href="#" class="btn btn-outline-secondary cancel-task" data-task-id="{{ task.id }}">
+                                                <i data-feather="x" class="feather-sm"></i>
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Quick Scan</h5>
+                </div>
+                <div class="card-body">
+                    <form id="quickScanForm" data-ajax="true" action="/api/tasks" method="POST" data-results-target="#quickScanResults" data-reset-on-success="true">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <div class="mb-3">
+                            <label for="scanTarget" class="form-label">Target</label>
+                            <input type="text" class="form-control" id="scanTarget" name="target" placeholder="Domain, IP, or URL" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="scanModule" class="form-label">Module</label>
+                            <select class="form-select" id="scanModule" name="module" required>
+                                <option value="" selected disabled>Select a module</option>
+                                {% for module in modules %}
+                                <option value="{{ module.id }}">{{ module.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="scanName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="scanName" name="name" placeholder="Scan name">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i data-feather="play" class="me-1"></i> Start Scan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Results</h5>
+                </div>
+                <div class="card-body">
+                    <div id="quickScanResults" class="results-output">
+                        <div class="text-center text-muted py-5">
+                            <i data-feather="inbox" width="48" height="48"></i>
+                            <p class="mt-2">No scan results yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Task Modal -->
+<div class="modal fade" id="newTaskModal" tabindex="-1" aria-labelledby="newTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newTaskModalLabel">Create New Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newTaskForm" data-ajax="true" action="/api/tasks" method="POST" data-success-callback="taskCreated">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <div class="mb-3">
+                        <label for="taskName" class="form-label">Task Name</label>
+                        <input type="text" class="form-control" id="taskName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="taskDescription" name="description" rows="2"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="taskModule" class="form-label">Module</label>
+                                <select class="form-select" id="taskModule" name="module" required>
+                                    <option value="" selected disabled>Select a module</option>
+                                    {% for module in modules %}
+                                    <option value="{{ module.id }}">{{ module.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="taskTarget" class="form-label">Target</label>
+                                <input type="text" class="form-control" id="taskTarget" name="target" placeholder="Domain, IP, or URL" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="taskPriority" class="form-label">Priority</label>
+                                <select class="form-select" id="taskPriority" name="priority">
+                                    <option value="1">Low</option>
+                                    <option value="2">Medium</option>
+                                    <option value="3" selected>Normal</option>
+                                    <option value="4">High</option>
+                                    <option value="5">Critical</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="taskTags" class="form-label">Tags</label>
+                                <input type="text" class="form-control" id="taskTags" name="tags" placeholder="Comma-separated tags">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskOptions" class="form-label">Options</label>
+                        <textarea class="form-control" id="taskOptions" name="options" rows="3" placeholder='{"key": "value"}'></textarea>
+                        <small class="form-text text-muted">JSON format options for the selected module</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submitNewTask">Create Task</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set progress bar widths
+        document.querySelector('.cpu-usage-bar').style.width = '{{ system_status.cpu_usage }}%';
+        document.querySelector('.memory-usage-bar').style.width = '{{ system_status.memory_usage }}%';
+        document.querySelector('.disk-usage-bar').style.width = '{{ system_status.disk_usage }}%';
+        
+        // Set task progress bars
+        document.querySelectorAll('.task-progress-bar').forEach(function(bar) {
+            const progress = bar.getAttribute('data-progress');
+            if (progress) {
+                bar.style.width = progress + '%';
+            }
+        });
+        
+        // Submit new task form
+        document.getElementById('submitNewTask').addEventListener('click', function() {
+            document.getElementById('newTaskForm').dispatchEvent(new Event('submit'));
+        });
+        
+        // Handle task creation success
+        window.taskCreated = function(result) {
+            // Close modal
+            var modal = bootstrap.Modal.getInstance(document.getElementById('newTaskModal'));
+            modal.hide();
+            
+            // Show success message
+            app.showNotification('Success', 'Task created successfully', 'success');
+            
+            // Reload page after a short delay to show the new task
+            setTimeout(function() {
+                window.location.reload();
+            }, 1500);
+        };
+        
+        // Refresh system status
+        document.getElementById('refreshStatus').addEventListener('click', function() {
+            fetch('/api/system/status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Update UI with new status data
+                        // In a real app, you'd update the UI elements with the new data
+                        app.showNotification('Success', 'System status refreshed', 'success');
+                    } else {
+                        app.showNotification('Error', 'Failed to refresh system status', 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error refreshing system status:', error);
+                    app.showNotification('Error', 'Failed to refresh system status', 'danger');
+                });
+        });
+        
+        // View task details
+        document.querySelectorAll('.view-task').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const taskId = this.getAttribute('data-task-id');
+                
+                fetch(`/api/tasks/${taskId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // In a real app, you'd show a modal with task details
+                            console.log('Task details:', data.data.task);
+                            app.showNotification('Info', `Viewing task ${taskId}`, 'info');
+                        } else {
+                            app.showNotification('Error', data.message, 'danger');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching task details:', error);
+                        app.showNotification('Error', 'Failed to fetch task details', 'danger');
+                    });
+            });
+        });
+        
+        // Cancel task
+        document.querySelectorAll('.cancel-task').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const taskId = this.getAttribute('data-task-id');
+                
+                if (confirm('Are you sure you want to cancel this task?')) {
+                    fetch(`/api/tasks/${taskId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-Token': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            status: 'cancelled'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            app.showNotification('Success', 'Task cancelled successfully', 'success');
+                            
+                            // Update task status in the UI
+                            const taskRow = document.querySelector(`tr[data-task-id="${taskId}"]`);
+                            if (taskRow) {
+                                const statusCell = taskRow.querySelector('.task-status');
+                                statusCell.classList.remove('scheduled');
+                                statusCell.classList.add('cancelled');
+                                
+                                const statusText = taskRow.querySelector('.task-status-text');
+                                statusText.textContent = 'cancelled';
+                            }
+                        } else {
+                            app.showNotification('Error', data.message, 'danger');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error cancelling task:', error);
+                        app.showNotification('Error', 'Failed to cancel task', 'danger');
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

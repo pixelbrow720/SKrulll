@@ -1,0 +1,308 @@
+# SKrulll Configuration File
+# Copy this file to config.yaml and adjust as needed.
+# Settings here can be overridden by environment variables where applicable.
+
+logging:
+  level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file: "logs/skrulll.log" # Path to log file, or null for console only
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  # Example for specific module logging level:
+  # module_levels:
+  #   modules.osint.social_analyzer: "DEBUG"
+
+database:
+  # PostgreSQL connection details are primarily set via .env
+  # You can specify fallbacks or additional non-sensitive options here if needed.
+  postgresql:
+    # host: localhost # Fallback if PGHOST is not set
+    # port: 5432      # Fallback if PGPORT is not set
+    # database: cyberops # Fallback if PGDATABASE is not set
+    # user: postgres  # Fallback if PGUSER is not set
+    # password: ""    # Password should always be in .env
+    # url: ""         # Fallback if DATABASE_URL is not set
+    pool_min_connections: 1
+    pool_max_connections: 10
+  mongodb:
+    # host: localhost
+    # port: 27017
+    # database: cyberops
+    # username: "" # Username/password should be in .env
+    # password: ""
+    connect_timeout_ms: 5000
+  elasticsearch:
+    # hosts: ["localhost:9200"] # Can be a list of hosts
+    # username: "" # Username/password should be in .env
+    # password: ""
+    # scheme: "http" # or "https"
+    # verify_certs: true
+    request_timeout: 30
+  neo4j:
+    # uri: "bolt://localhost:7687"
+    # username: "neo4j"
+    # password: "" # Password should be in .env
+    max_connection_lifetime: 3600 # seconds
+
+messaging:
+  type: "rabbitmq" # "rabbitmq" or "kafka"
+  rabbitmq:
+    # host: "localhost"
+    # port: 5672
+    # virtual_host: "/"
+    # username: "guest" # Credentials should be in .env
+    # password: "guest"
+    heartbeat: 60
+    blocked_connection_timeout: 300
+  kafka:
+    # bootstrap_servers: "localhost:9092" # Comma-separated list
+    # client_id: "skrulll"
+    request_timeout_ms: 30000
+    # ssl_cafile: "/path/to/ca.crt" # If using SSL
+    # security_protocol: "PLAINTEXT" # or SSL, SASL_SSL, SASL_PLAINTEXT
+
+modules:
+  osint:
+    domain_recon:
+      whois_timeout: 10
+      dns_timeout: 5
+      # Path to wordlist for subdomain discovery, relative to project root
+      subdomain_wordlist: "wordlists/subdomains.txt"
+    social_media: # For social_media.py (basic checker)
+      default_timeout: 5 # seconds
+      max_workers: 20
+      cache_ttl: 86400 # 24 hours
+    aggregator: # For osint_aggregator.py
+      # API keys should be in .env
+      # twitter_consumer_key: ""
+      # reddit_client_id: ""
+      web_scraper_timeout: 10 # seconds
+      max_results_per_platform: 20
+    social_analyzer: # For social_analyzer.py
+      max_workers: 4 # For parallel processing within the analyzer
+      result_cache_ttl: 3600 # 1 hour for analyzed results
+      max_graph_nodes: 100
+      max_memory_mb: 512 # Max memory for analysis tasks
+      sentiment_model: "distilbert-base-uncased-finetuned-sst-2-english"
+    search_footprint:
+      # serpapi_key should be in .env
+      cache_dir: "data/cache/search_footprint"
+      cache_ttl: 86400 # 24 hours
+      rate_limit_requests: 10
+      rate_limit_period: 60 # seconds
+      mongodb_history_db: "skrulll_osint_history" # If different from main DB
+      history_ttl_days: 90
+
+  security:
+    port_scanner: # For basic Python port_scanner.py
+      default_timeout: 1.0
+      max_workers: 100
+      default_ports: [21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 443, 445, 993, 995, 1723, 3306, 3389, 5900, 8080]
+    vulnerability_scanner: # For basic Python vulnerability_scanner.py
+      default_timeout: 30
+      max_workers: 10
+      request_delay: 0.1 # seconds
+      max_retries: 3
+      result_cache_ttl: 3600
+    service_enumerator:
+      default_timeout: 2
+      max_threads: 50
+      # nmap_path: "/usr/bin/nmap" # If nmap is not in system PATH
+    network_mapper: # For high-level network_mapper.py (wrapper for scanner/netmap)
+      default_timeout_ms: 1000
+      max_workers: 10 # For parallel processing of multiple targets
+      cache_ttl: 3600
+      # neo4j: # Uses main Neo4j config by default, can override here
+      #   uri: "bolt://localhost:7687"
+      #   username: "neo4j"
+      #   password: "" # From .env
+    attack_vector_mapper:
+      # Uses main Neo4j config
+      default_max_path_depth: 10
+      default_max_paths: 20
+      path_cache_size: 1000
+    code_analyzer:
+      # pylint_rcfile: ".pylintrc"
+      # bandit_configfile: ".bandit"
+      custom_rules_dir: "config/security_rules"
+    data_leak_detector:
+      # pastebin_api_key should be in .env
+      # mongodb_uri is main MongoDB by default
+      # mongodb_db: "leaks" # Database name for leaks
+      slack_webhook: "" # Slack webhook URL for alerts
+    entry_point_analyzer:
+      default_scan_depth: 2
+      default_timeout: 10 # seconds
+      user_agent: "SKrulll EPA/1.0"
+      # openapi_spec_path: "/path/to/openapi.json" # Can be passed as argument
+    reporting_system:
+      output_dir: "reports/security_assessments"
+      company_name: "SKrulll Security Assessments"
+      logo_path: "static/img/default_logo.png" # Relative to app root or absolute
+      report_templates_dir: "templates/reports" # Relative to app root
+
+  vulnerability:
+    scanner: # For advanced vulnerability_scanner.py (Nuclei/OpenVAS)
+      template_dir: "modules/vulnerability/templates" # Main template dir
+      extra_template_dirs: [] # List of additional template paths
+      max_concurrent_scans: 10
+      scan_rate_limit: 5 # scans per second
+      requests_per_host_limit: 10 # requests per host per second
+      nuclei_path: "nuclei" # Path to Nuclei binary or command
+      nuclei_templates_dir: "modules/vulnerability/templates/nuclei" # Specific Nuclei templates
+      # openvas: # Credentials should be in .env
+      #   host: "localhost"
+      #   port: 9390
+      #   username: "admin"
+      #   password: ""
+      db_connection_string: "" # Uses main DATABASE_URL from .env by default
+    exploiter: # For exploit_tester.py
+      # msfrpc: # Host/Port from config, User/Pass from .env
+      #   host: "localhost"
+      #   port: 55553
+      #   username: "msf"
+      #   password: ""
+      use_containers: true
+      container_image: "metasploitframework/metasploit-framework"
+      exploits_directory: "modules/vulnerability/exploiter/exploits"
+      report_template_directory: "modules/vulnerability/exploiter/templates"
+      db_connection_string: "" # Uses main DATABASE_URL from .env by default
+      allow_local_execution: false # Security setting: run custom exploits locally
+      bypass_security_checks: false # Security setting: bypass dangerous code checks
+      local_execution_timeout: 300 # seconds
+    api_tester: # For api_tester Go module
+      # These settings mirror the api_tester/config.json structure
+      target:
+        base_url: "http://localhost:8080/api" # Default target for API tester
+        headers:
+          User-Agent: "SKrulll/ApiSecTester"
+          Accept: "application/json"
+        # auth_token: "" # Provided at runtime or via .env if static
+        auth_method: "none" # none, basic, oauth2, custom
+        # username: "" # For basic auth
+        # password: ""
+        # client_id: "" # For oauth2
+        # client_secret: ""
+        # token_endpoint: "http://localhost:8080/oauth/token"
+        skip_tls_verify: true # Be careful with this in production
+        request_timeout: 30 # seconds
+      tests:
+        authentication: true
+        authorization: true
+        injection: true
+        data_exposure: true
+        rate_limit: true
+        cors: true
+        ssrf: true
+        mass_assignment: true
+      execution:
+        concurrency: 5
+        output_directory: "reports/api_tests" # Relative to api-tester module or absolute
+        request_delay: 100 # milliseconds
+        max_requests_per_endpoint: 20
+        debug: false
+      test_data: # Paths relative to api-tester module or absolute
+        sql_injection_payloads_file: "test_data/sql_injection.txt"
+        nosql_injection_payloads_file: "test_data/nosql_injection.txt"
+        command_injection_payloads_file: "test_data/command_injection.txt"
+        path_traversal_payloads_file: "test_data/path_traversal.txt"
+        sensitive_data_regex:
+          - "\\b\\d{16}\\b" # Credit card
+          - "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b" # Email
+        custom_parameters: {}
+
+  scanner: # For Go/Rust based scanners
+    domain_scanner: # Corresponds to modules/scanner/domain/main.go
+      default_timeout_seconds: 5
+      default_port_timeout_seconds: 2
+      default_dns_servers: ["8.8.8.8", "1.1.1.1"]
+      default_common_ports: [21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 443, 445, 3306, 3389, 5900, 8080]
+      wordlist_path: "wordlists/subdomains.txt" # Used if WORDLIST_PATH env var not set
+      output_path: "output/domain_scans"
+      # mongodb_uri: "" # Uses main MONGODB_URI from .env by default
+      # db_name: "cyberops"
+      port_scan_enabled: true
+      bruteforce_subdomains_enabled: true
+      recursive_scan_enabled: false
+    netmap: # Corresponds to modules/scanner/netmap/
+      # Rust binary scan_network uses its own defaults, Python wrapper can take these:
+      default_method: "combined"
+      default_timeout_ms: 1000
+      default_parallelism: 256 # For scan_with_rust_binary
+      resolve_hostnames: true
+      # Neo4j settings for export are taken from main DB config
+
+web:
+  host: "0.0.0.0"
+  port: 5000
+  debug: false # Set to true for development, false for production (override with FLASK_DEBUG env)
+  # secret_key: "" # Should be in .env
+  session_cookie_secure: true # Set to false if not using HTTPS in dev
+  session_cookie_samesite: "Lax"
+  bootstrap_serve_local: true # Serve Bootstrap locally or from CDN
+  default_theme: "dark" # "dark" or "light"
+
+scheduler:
+  storage_path: "data/scheduler.json" # Path to store scheduled tasks
+  # For more robust scheduler persistence, consider a database backend:
+  # backend_type: "database" # or "json_file"
+  # database_config: # if backend_type is database
+  #   type: "postgresql" # or other supported DB
+  #   # Uses main DB connection by default, can override here
+  auto_start: true # Whether the scheduler starts automatically with the orchestrator
+
+optimization:
+  # Memory allocation optimization settings (used by optimization.py)
+  # These are defaults that can be overridden by a custom JSON file via optimize_memory_usage
+  memory_allocations:
+    reserve_percentage: 0.15 # Default percentage of total memory to reserve for OS (dynamic in code)
+    neo4j_percentage: 0.25
+    elasticsearch_percentage: 0.20
+    app_percentage: 0.10
+    mongodb_percentage: 0.15
+    workload_type: "balanced" # "balanced", "graph_intensive", "search_intensive"
+    concurrent_users: 10
+    # data_size_gb: 0 # For MongoDB tuning, 0 means not specified
+    max_limits:
+      neo4j_mb: 8192
+      elasticsearch_mb: 31744 # ES recommendation for <64GB RAM systems
+      app_mb: 4096
+      mongodb_mb: 4096
+  
+  # Database query analysis settings (used by optimization.py)
+  query_analysis:
+    # Directory containing JSON files with queries to analyze
+    # Paths relative to project root
+    query_files_dir: "queries/" 
+    # Example: queries/postgresql_queries.json, queries/mongodb_queries.json etc.
+    explain_output_dir: "reports/query_explain/" # Directory for EXPLAIN outputs
+
+  # Docker image optimization profile (used by optimization.py for generating suggestions)
+  # This is a placeholder as the current implementation returns hardcoded suggestions.
+  # A real implementation might have profiles like "slim", "secure", "performance".
+  docker_optimization_profile: "default"
+
+  # Caching strategy settings (used by optimization.py to setup caching config)
+  caching:
+    enabled: true
+    type: "redis" # "redis" or "memory" (memory is in-process, not shared)
+    # ttl: # Default TTLs are hardcoded in optimization.py, could be moved here
+    #   vulnerability_data: 3600
+    #   default: 300
+    # redis: # Credentials should be in .env
+    #   host: "localhost"
+    #   port: 6379
+    #   db: 0
+    #   password: ""
+    memory: # For in-memory cache type
+      max_size_mb: 128
+      cleanup_interval_seconds: 300
+
+# Deployment specific settings (can be overridden by environment-specific files)
+deployment:
+  environment: "development" # development, staging, production
+  backup:
+    backup_dir: "backups/"
+    # For production.py, env_file is passed as argument or defaults
+    # env_file: ".env.production" 
+  # Configuration for optimization report generation
+  optimization_report:
+    output_path: "reports/optimization_report.json" # Path to save the report

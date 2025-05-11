@@ -146,12 +146,19 @@ def osint_domain(ctx, domain, output, whois, dns, subdomains):
     try:
         logger.info(f"Starting domain reconnaissance for {domain}")
         
+        # Get configuration from context
+        config = ctx.obj.get('config', {})
+        domain_recon_config = config.get('modules', {}).get('osint', {}).get('domain_recon', {})
+        
         # Use the domain_recon module to perform the requested operations
         results = investigate_domain(
             domain, 
             perform_whois=whois,
             perform_dns=dns,
-            discover_subdomains=subdomains
+            discover_subdomains=subdomains,
+            whois_timeout=domain_recon_config.get('whois_timeout', 10),
+            dns_timeout=domain_recon_config.get('dns_timeout', 5),
+            subdomain_wordlist=domain_recon_config.get('subdomain_wordlist')
         )
         
         # Display results
@@ -352,13 +359,21 @@ def security(ctx):
 @security.command('portscan')
 @click.argument('target')
 @click.option('--ports', '-p', help='Port range to scan (e.g., 1-1000 or 22,80,443)')
-@click.option('--timeout', '-t', type=float, default=1.0, help='Timeout in seconds for each port')
+@click.option('--timeout', '-t', type=float, default=None, help='Timeout in seconds for each port')
 @click.option('--output', '-o', help='Output file for results')
 @click.pass_context
 def security_portscan(ctx, target, ports, timeout, output):
     """Perform a port scan on a target host or network."""
     try:
         logger.info(f"Starting port scan on {target}")
+        
+        # Get configuration from context
+        config = ctx.obj.get('config', {})
+        port_scanner_config = config.get('modules', {}).get('security', {}).get('port_scanner', {})
+        
+        # Use timeout from command line if provided, otherwise from config, or default
+        if timeout is None:
+            timeout = port_scanner_config.get('default_timeout', 1.0)
         
         # Parse port range
         port_list = []
@@ -370,6 +385,9 @@ def security_portscan(ctx, target, ports, timeout, output):
                 port_list = [int(p) for p in ports.split(',')]
             else:
                 port_list = [int(ports)]
+        else:
+            # Use default ports from config if available
+            port_list = port_scanner_config.get('default_ports')
         
         # Use the port_scanner module to perform the scan
         results = port_scanner.scan_ports(target, port_list, timeout)
@@ -397,17 +415,30 @@ def security_portscan(ctx, target, ports, timeout, output):
 
 @security.command('vulnscan')
 @click.argument('target')
-@click.option('--level', type=click.Choice(['low', 'medium', 'high']), default='medium', 
+@click.option('--level', type=click.Choice(['low', 'medium', 'high']), default=None, 
               help='Scan intensity level')
+@click.option('--no-cache', is_flag=True, help='Disable result caching')
 @click.option('--output', '-o', help='Output file for results')
 @click.pass_context
-def security_vulnscan(ctx, target, level, output):
+def security_vulnscan(ctx, target, level, no_cache, output):
     """Perform a vulnerability scan on a target host or application."""
     try:
+        # Get configuration from context
+        config = ctx.obj.get('config', {})
+        vuln_scanner_config = config.get('modules', {}).get('security', {}).get('vulnerability_scanner', {})
+        
+        # Use level from command line if provided, otherwise from config, or default
+        if level is None:
+            level = vuln_scanner_config.get('level', 'medium')
+        
         logger.info(f"Starting vulnerability scan on {target} with level {level}")
         
         # Use the vulnerability_scanner module to perform the scan
-        results = vulnerability_scanner.scan_vulnerabilities(target, level)
+        results = vulnerability_scanner.scan_vulnerabilities(
+            target, 
+            level=level,
+            use_cache=not no_cache
+        )
         
         # Display results
         click.echo(f"Vulnerability Scan Results for {target}:")

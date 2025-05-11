@@ -8,6 +8,10 @@ application and ties together all the components of the system.
 import logging
 import os
 import sys
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from web.app import create_app
 from orchestrator.cli import cli_app

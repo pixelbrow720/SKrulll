@@ -13,8 +13,6 @@
 
 *Unify, Orchestrate, Secure*
 
-</div>
-
 ## 📋 Table of Contents
 
 - [Overview](#-overview)
@@ -25,27 +23,24 @@
   - [Prerequisites](#prerequisites)
   - [Standard Installation](#standard-installation)
   - [Docker Installation](#docker-installation)
+- [Configuration](#-configuration)
 - [Usage Guide](#-usage-guide)
   - [Command Line Interface](#command-line-interface)
   - [Web Interface](#web-interface)
   - [API Integration](#api-integration)
-- [Use Cases](#-use-cases)
 - [Development](#-development)
+  - [Project Structure](#project-structure)
   - [Adding New Modules](#adding-new-modules)
   - [Testing](#testing)
-- [Roadmap](#-roadmap)
+- [Troubleshooting](#-troubleshooting)
 - [Contributing](#-contributing)
 - [License](#-license)
-- [Acknowledgments](#-acknowledgments)
-- [Contact & Support](#-contact--support)
 
 ## 🔍 Overview
 
 **SKrulll** is a comprehensive cybersecurity and OSINT (Open Source Intelligence) tool orchestrator that provides a unified interface for various security tools. It enables seamless integration between different security components with centralized configuration and data sharing capabilities.
 
 SKrulll bridges the gap between disparate security tools, creating a cohesive ecosystem where data flows efficiently between reconnaissance, scanning, analysis, and reporting phases. This integration dramatically improves security assessment workflows and provides deeper insights through cross-tool data correlation.
-
-> *"SKrulll transforms the fragmented security tooling landscape into a unified security intelligence platform."*
 
 ## 🚀 Key Features
 
@@ -137,7 +132,8 @@ SKrulll consists of several key components working together:
 4. **Set up the configuration**:
    ```bash
    cp config/config.example.yaml config/config.yaml
-   # Edit config.yaml with your settings
+   cp .env.example .env
+   # Edit config.yaml and .env with your settings
    ```
 
 5. **Initialize the databases**:
@@ -167,6 +163,22 @@ For a fully containerized setup:
 
 This will start all required services including the SKrulll application, databases, and supporting services.
 
+## ⚙️ Configuration
+
+SKrulll uses a combination of configuration files and environment variables:
+
+1. **Configuration File**: The main configuration file is `config/config.yaml`, which contains settings for all components of the system. A template is provided as `config/config.example.yaml`.
+
+2. **Environment Variables**: Sensitive information like database credentials should be stored in the `.env` file. A template is provided as `.env.example`.
+
+3. **Command-line Arguments**: Many settings can be overridden via command-line arguments when running the application.
+
+The configuration is loaded in the following order, with later sources overriding earlier ones:
+1. Default values hardcoded in the application
+2. Values from `config/config.yaml`
+3. Environment variables
+4. Command-line arguments
+
 ## 📚 Usage Guide
 
 ### Command Line Interface
@@ -178,25 +190,22 @@ SKrulll provides a comprehensive CLI for all operations:
 python main.py --help
 
 # Run a port scan with service detection
-python main.py security portscan 192.168.1.1 --ports 1-1000 --service-detection
+python main.py security portscan 192.168.1.1 --ports 1-1000
 
 # Perform comprehensive domain reconnaissance
-python main.py osint domain example.com --whois --dns --subdomains --technologies --screenshots
+python main.py osint domain example.com --whois --dns --subdomains
 
 # Analyze social media presence across platforms
-python main.py osint social username --platforms twitter,reddit,linkedin,instagram --sentiment-analysis
+python main.py osint social username --platforms twitter,reddit,linkedin,instagram
 
 # Run a vulnerability scan with custom templates
-python main.py security vulnscan https://example.com --level high --templates web,api,cms
+python main.py security vulnscan https://example.com --level high
 
 # Map network topology and identify potential attack paths
-python main.py security netmap 192.168.1.0/24 --visualize --attack-paths
+python main.py security netmap 192.168.1.0/24 --visualize
 
 # Schedule a recurring task with notification
-python main.py schedule add "Daily Security Scan" "security vulnscan example.com" --cron "0 0 * * *" --notify email@example.com
-
-# Generate a comprehensive security report
-python main.py report generate --modules osint,security,vulnerability --format pdf,html --output report.pdf
+python main.py schedule add "Daily Security Scan" "security vulnscan example.com" --cron "0 0 * * *"
 ```
 
 ### Web Interface
@@ -214,7 +223,6 @@ The web interface provides a user-friendly dashboard for managing scans and view
 
 3. **Key features**:
    - Interactive dashboard with real-time scan status
-   - Drag-and-drop workflow builder
    - Customizable reporting templates
    - Interactive network and attack path visualizations
    - User and role management
@@ -246,47 +254,36 @@ curl -X POST http://localhost:8000/api/v1/security/portscan \
   -d '{"target": "192.168.1.1", "ports": "1-1000", "options": {"service_detection": true}}'
 ```
 
-## 🔮 Use Cases
-
-SKrulll excels in various security scenarios:
-
-### 1. Comprehensive Security Assessment
-
-Combine OSINT, vulnerability scanning, and network mapping to perform a full security assessment:
-
-```bash
-# Create and run a comprehensive assessment workflow
-python main.py workflow run comprehensive-assessment target.com
-```
-
-### 2. Continuous Security Monitoring
-
-Set up recurring scans to monitor for new vulnerabilities or changes:
-
-```bash
-# Schedule daily security checks
-python main.py schedule add "Daily Security Check" "workflow run security-monitoring target.com" --cron "0 0 * * *"
-```
-
-### 3. Attack Surface Mapping
-
-Identify and visualize all potential entry points to your systems:
-
-```bash
-# Generate an attack surface map
-python main.py security attack-surface-map target.com --include-cloud --include-third-party
-```
-
-### 4. Threat Intelligence Integration
-
-Correlate findings with threat intelligence data:
-
-```bash
-# Enrich scan results with threat intelligence
-python main.py enrich scan-results-20250510 --threat-intel
-```
-
 ## 💻 Development
+
+### Project Structure
+
+The project is organized into the following directories:
+
+```
+SKrulll/
+├── config/                 # Configuration files
+├── data/                   # Data storage
+├── deploy/                 # Deployment scripts
+├── docs/                   # Documentation
+├── modules/                # Core functionality modules
+│   ├── osint/              # Open Source Intelligence modules
+│   ├── scanner/            # Network and vulnerability scanners
+│   ├── security/           # Security assessment modules
+│   └── vulnerability/      # Vulnerability testing modules
+├── orchestrator/           # Core orchestration system
+│   ├── db/                 # Database connectors
+├── scheduler/              # Task scheduling system
+├── static/                 # Static web assets
+├── templates/              # Templates for reports and Docker
+│   ├── docker/             # Dockerfiles for various components
+├── tests/                  # Test suite
+├── web/                    # Web interface
+│   ├── templates/          # Web UI templates
+├── main.py                 # Main entry point
+├── requirements.txt        # Python dependencies
+└── setup.sh                # Setup script
+```
 
 ### Adding New Modules
 
@@ -330,18 +327,25 @@ python -m coverage html  # Generates detailed HTML report
 python tests/benchmark.py
 ```
 
-## 📅 Roadmap
+## 🔧 Troubleshooting
 
-SKrulll is under active development with the following features planned:
+If you encounter issues while running SKrulll:
 
-- **Cloud Integration**: Native support for AWS, Azure, and GCP security assessment
-- **Machine Learning**: Anomaly detection and predictive security analytics
-- **Expanded OSINT**: Additional data sources and correlation techniques
-- **Mobile Security**: Assessment tools for Android and iOS applications
-- **Supply Chain Security**: Dependency analysis and vulnerability tracking
-- **Deception Technology**: Honeypot deployment and monitoring
-- **Compliance Reporting**: Automated compliance assessment for various standards
-- **Threat Hunting**: Advanced tools for proactive threat detection
+1. **Check the logs**: Look for error messages in the logs directory or console output.
+
+2. **Verify configuration**: Ensure your `config/config.yaml` and `.env` files are properly configured.
+
+3. **Database connections**: Verify that all required databases are running and accessible.
+
+4. **Docker issues**: If using Docker, check container logs with `docker logs container_name`.
+
+5. **Git issues**: If you encounter Git-related issues, use the included `git-fix.sh` script:
+   ```bash
+   chmod +x git-fix.sh
+   ./git-fix.sh
+   ```
+
+6. **Missing files**: If you encounter errors about missing files, make sure to create all necessary directories and files as mentioned in the setup instructions.
 
 ## 👥 Contributing
 
@@ -358,21 +362,6 @@ Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our co
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Thanks to all the open-source security tools that SKrulll builds upon
-- Special thanks to our contributors and community members
-- Inspired by the need for better integration between security tools
-
-## 📞 Contact & Support
-
-- **GitHub**: [@pixelbrow720](https://github.com/pixelbrow720)
-- **Twitter**: [@BrowPixel](https://twitter.com/BrowPixel)
-- **Email**: [pixelbrow13@gmail.com](mailto:pixelbrow13@gmail.com)
-- **Website**: [skrulll.security](https://skrulll.security)
-- **Documentation**: [docs.skrulll.security](https://docs.skrulll.security)
-- **Community Forum**: [community.skrulll.security](https://community.skrulll.security)
 
 ---
 

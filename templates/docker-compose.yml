@@ -222,7 +222,7 @@ services:
     networks:
       - cyberops-frontend
       - cyberops-backend
-    command: ["main.py", "webui", "--host", "0.0.0.0", "--port", "5000"]
+    command: ["main.py", "webui", "--host", "0.0.0.0", "--port", "5000", "--config", "/app/config/config.yaml"]
     # Note: The 'webui' command initializes the TaskScheduler with auto_start=True in cli.py,
     # which starts a background thread for scheduled tasks. No additional command is needed
     # for the scheduler to run alongside the web UI.

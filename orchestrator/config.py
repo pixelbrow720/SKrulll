@@ -4,7 +4,7 @@ Configuration management for the SKrulll Orchestrator.
 This module provides functionality for loading and managing configuration
 settings from environment variables, configuration files, and defaults.
 """
-import json
+import yaml
 import logging
 import os
 from pathlib import Path
@@ -113,7 +113,7 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
             if config_file.exists():
                 logger.info(f"Loading configuration from {config_path}")
                 with open(config_file, 'r') as f:
-                    file_config = json.load(f)
+                    file_config = yaml.safe_load(f)
                     
                 # Deep merge the configurations
                 deep_merge(config, file_config)
@@ -186,7 +186,7 @@ def save_config(config: Dict[str, Any], config_path: str) -> bool:
         config_file.parent.mkdir(parents=True, exist_ok=True)
         
         with open(config_file, 'w') as f:
-            json.dump(config, f, indent=2)
+            yaml.dump(config, f, default_flow_style=False, sort_keys=False)
             
         logger.info(f"Configuration saved to {config_path}")
         return True

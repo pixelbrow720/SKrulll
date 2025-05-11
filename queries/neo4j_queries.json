@@ -1,0 +1,92 @@
+[
+  {
+    "id": "find_vulnerable_hosts",
+    "query": "MATCH (h:Host)-[:RUNS]->(s:Service)-[:HAS_VULNERABILITY]->(v:Vulnerability) WHERE v.severity IN ['High', 'Critical'] RETURN h.ip_address, h.hostname, collect(v.name) as vulnerabilities ORDER BY size(vulnerabilities) DESC LIMIT 10",
+    "context": {
+      "graph_size": "medium",
+      "frequency": "high",
+      "indexes": ["Host(ip_address)", "Vulnerability(severity)"]
+    }
+  },
+  {
+    "id": "find_network_paths",
+    "query": "MATCH p = (h1:Host {ip_address: '192.168.1.1'})-[:CONNECTS_TO*1..5]->(h2:Host {ip_address: '192.168.1.100'}) RETURN p",
+    "context": {
+      "graph_size": "large",
+      "frequency": "medium",
+      "indexes": ["Host(ip_address)"]
+    }
+  },
+  {
+    "id": "find_domain_subdomains",
+    "query": "MATCH (d:Domain {name: 'example.com'})<-[:SUBDOMAIN_OF*1..3]-(sub:Domain) RETURN sub.name ORDER BY sub.name",
+    "context": {
+      "graph_size": "medium",
+      "frequency": "high",
+      "indexes": ["Domain(name)"]
+    }
+  },
+  {
+    "id": "find_attack_paths",
+    "query": "MATCH (entry:Host {is_entry_point: true}), (target:Host {is_critical: true}), p = shortestPath((entry)-[:CONNECTS_TO*1..10]->(target)) RETURN p",
+    "context": {
+      "graph_size": "large",
+      "frequency": "low",
+      "indexes": ["Host(is_entry_point)", "Host(is_critical)"]
+    }
+  },
+  {
+    "id": "collect_all_services",
+    "query": "MATCH (h:Host) OPTIONAL MATCH (h)-[:RUNS]->(s:Service) WITH h, collect(s) as services RETURN h.ip_address, h.hostname, size(services) as service_count, [s IN services | s.name + ':' + toString(s.port)] as service_list ORDER BY service_count DESC",
+    "context": {
+      "graph_size": "large",
+      "frequency": "medium",
+      "indexes": []
+    }
+  },
+  {
+    "id": "find_hosts_with_multiple_vulnerabilities",
+    "query": "MATCH (h:Host)-[:RUNS]->(s:Service)-[:HAS_VULNERABILITY]->(v:Vulnerability) WITH h, count(v) as vuln_count WHERE vuln_count > 5 RETURN h.ip_address, h.hostname, vuln_count ORDER BY vuln_count DESC",
+    "context": {
+      "graph_size": "large",
+      "frequency": "high",
+      "indexes": []
+    }
+  },
+  {
+    "id": "find_domain_relationships",
+    "query": "MATCH (d:Domain {name: 'example.com'}) OPTIONAL MATCH (d)-[:RESOLVES_TO]->(h:Host) OPTIONAL MATCH (d)<-[:SUBDOMAIN_OF]-(sub:Domain) RETURN d.name as domain, collect(DISTINCT h.ip_address) as ip_addresses, collect(DISTINCT sub.name) as subdomains",
+    "context": {
+      "graph_size": "medium",
+      "frequency": "medium",
+      "indexes": ["Domain(name)"]
+    }
+  },
+  {
+    "id": "find_connected_network_segments",
+    "query": "MATCH (h1:Host)-[r:CONNECTS_TO]->(h2:Host) WITH split(h1.ip_address, '.')[0..3] as segment1, split(h2.ip_address, '.')[0..3] as segment2, count(*) as connections WHERE segment1 <> segment2 RETURN segment1[0] + '.' + segment1[1] + '.' + segment1[2] + '.*' as source_segment, segment2[0] + '.' + segment2[1] + '.' + segment2[2] + '.*' as target_segment, connections ORDER BY connections DESC",
+    "context": {
+      "graph_size": "large",
+      "frequency": "low",
+      "indexes": []
+    }
+  },
+  {
+    "id": "find_vulnerability_impact",
+    "query": "MATCH (v:Vulnerability {name: 'CVE-2021-44228'})<-[:HAS_VULNERABILITY]-(s:Service)<-[:RUNS]-(h:Host) OPTIONAL MATCH (h)-[:CONNECTS_TO*1..3]->(connected:Host) RETURN v.name as vulnerability, count(DISTINCT h) as affected_hosts, count(DISTINCT connected) as potentially_impacted_hosts",
+    "context": {
+      "graph_size": "large",
+      "frequency": "medium",
+      "indexes": ["Vulnerability(name)"]
+    }
+  },
+  {
+    "id": "complex_attack_surface_analysis",
+    "query": "MATCH (internet:Host {name: 'Internet'})-[:CONNECTS_TO]->(entry:Host)-[:RUNS]->(s:Service) WHERE s.is_exposed = true WITH entry, collect(s) as exposed_services MATCH (entry)-[:CONNECTS_TO*1..3]->(internal:Host) WHERE internal.is_critical = true RETURN entry.ip_address as entry_point, [svc IN exposed_services | svc.name + ':' + toString(svc.port)] as exposed_services, collect(DISTINCT internal.ip_address) as reachable_critical_assets ORDER BY size(reachable_critical_assets) DESC",
+    "context": {
+      "graph_size": "very_large",
+      "frequency": "low",
+      "indexes": ["Host(name)", "Host(is_critical)", "Service(is_exposed)"]
+    }
+  }
+]

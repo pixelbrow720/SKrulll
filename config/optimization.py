@@ -413,12 +413,15 @@ def lint_database_queries(db_type: str, queries_file: str, explain_output_file: 
     
     return optimization_suggestions
 
-def _lint_postgresql_query(query: str) -> Tuple[str, Dict[str, Any]]:
+def _lint_postgresql_query(query: str, query_explain: Optional[Dict[str, Any]] = None, 
+                          context: Optional[Dict[str, Any]] = None) -> Tuple[str, Dict[str, Any]]:
     """
     Analyze and lint a PostgreSQL query.
     
     Args:
         query: The SQL query to optimize
+        query_explain: Optional EXPLAIN output for the query
+        context: Optional context information about the query
         
     Returns:
         Tuple of (optimization_suggestion, improvement_metrics)
@@ -490,12 +493,15 @@ def _lint_postgresql_query(query: str) -> Tuple[str, Dict[str, Any]]:
     
     return suggestion, metrics
 
-def _lint_mongodb_query(query: str) -> Tuple[str, Dict[str, Any]]:
+def _lint_mongodb_query(query: str, query_explain: Optional[Dict[str, Any]] = None,
+                       context: Optional[Dict[str, Any]] = None) -> Tuple[str, Dict[str, Any]]:
     """
     Analyze and lint a MongoDB query.
     
     Args:
         query: The MongoDB query to optimize (as a string representation)
+        query_explain: Optional explain output for the query
+        context: Optional context information about the query
         
     Returns:
         Tuple of (optimization_suggestion, improvement_metrics)
@@ -569,12 +575,15 @@ def _lint_mongodb_query(query: str) -> Tuple[str, Dict[str, Any]]:
     
     return suggestion, metrics
 
-def _lint_neo4j_query(query: str) -> Tuple[str, Dict[str, Any]]:
+def _lint_neo4j_query(query: str, query_explain: Optional[Dict[str, Any]] = None,
+                     context: Optional[Dict[str, Any]] = None) -> Tuple[str, Dict[str, Any]]:
     """
     Analyze and lint a Neo4j Cypher query.
     
     Args:
         query: The Cypher query to optimize
+        query_explain: Optional PROFILE or EXPLAIN output for the query
+        context: Optional context information about the query
         
     Returns:
         Tuple of (optimization_suggestion, improvement_metrics)

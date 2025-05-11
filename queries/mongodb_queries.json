@@ -1,0 +1,92 @@
+[
+  {
+    "id": "find_vulnerabilities",
+    "query": "db.vulnerabilities.find({ severity: { $in: ['high', 'critical'] } }).sort({ created_at: -1 }).limit(100)",
+    "context": {
+      "collection_size": "large",
+      "frequency": "high",
+      "indexes": ["severity", "created_at"]
+    }
+  },
+  {
+    "id": "aggregate_vulnerabilities_by_severity",
+    "query": "db.vulnerabilities.aggregate([ { $group: { _id: '$severity', count: { $sum: 1 } } }, { $sort: { count: -1 } } ])",
+    "context": {
+      "collection_size": "large",
+      "frequency": "medium",
+      "indexes": ["severity"]
+    }
+  },
+  {
+    "id": "find_hosts_with_open_ports",
+    "query": "db.hosts.find({ 'ports.is_open': true, 'ports.port': { $in: [22, 80, 443, 3389] } })",
+    "context": {
+      "collection_size": "medium",
+      "frequency": "high",
+      "indexes": ["ports.port", "ports.is_open"]
+    }
+  },
+  {
+    "id": "find_domains_by_registrar",
+    "query": "db.domains.find({ registrar: /GoDaddy/i })",
+    "context": {
+      "collection_size": "medium",
+      "frequency": "low",
+      "indexes": []
+    }
+  },
+  {
+    "id": "update_scan_status",
+    "query": "db.scans.updateOne({ _id: ObjectId('60a2b5e3f5d9b23c4c88a1d4') }, { $set: { status: 'completed', completed_at: new Date() } })",
+    "context": {
+      "collection_size": "large",
+      "frequency": "high",
+      "indexes": ["_id"]
+    }
+  },
+  {
+    "id": "find_recent_tasks",
+    "query": "db.tasks.find({ status: { $in: ['pending', 'running'] } }).sort({ created_at: -1 }).limit(20)",
+    "context": {
+      "collection_size": "large",
+      "frequency": "very_high",
+      "indexes": ["status", "created_at"]
+    }
+  },
+  {
+    "id": "aggregate_vulnerabilities_by_host",
+    "query": "db.vulnerabilities.aggregate([ { $match: { severity: { $in: ['high', 'critical'] } } }, { $group: { _id: '$host_id', count: { $sum: 1 }, vulnerabilities: { $push: { name: '$name', severity: '$severity' } } } }, { $sort: { count: -1 } }, { $limit: 10 } ])",
+    "context": {
+      "collection_size": "large",
+      "frequency": "medium",
+      "indexes": ["severity", "host_id"]
+    }
+  },
+  {
+    "id": "find_users_with_regex",
+    "query": "db.users.find({ email: /.*gmail\\.com$/ })",
+    "context": {
+      "collection_size": "medium",
+      "frequency": "low",
+      "indexes": []
+    }
+  },
+  {
+    "id": "update_multiple_documents",
+    "query": "db.hosts.updateMany({ last_scan: { $lt: ISODate('2023-01-01') } }, { $set: { needs_scan: true } })",
+    "context": {
+      "collection_size": "large",
+      "frequency": "low",
+      "indexes": ["last_scan"]
+    }
+  },
+  {
+    "id": "complex_aggregation_pipeline",
+    "query": "db.scan_results.aggregate([ { $match: { timestamp: { $gte: ISODate('2023-01-01') } } }, { $lookup: { from: 'hosts', localField: 'host_id', foreignField: '_id', as: 'host_info' } }, { $unwind: '$host_info' }, { $lookup: { from: 'vulnerabilities', localField: '_id', foreignField: 'scan_id', as: 'vulnerabilities' } }, { $project: { _id: 1, timestamp: 1, 'host_info.hostname': 1, 'host_info.ip_address': 1, vulnerability_count: { $size: '$vulnerabilities' } } }, { $sort: { vulnerability_count: -1 } }, { $limit: 20 } ])",
+    "context": {
+      "collection_size": "very_large",
+      "frequency": "low",
+      "indexes": ["timestamp", "host_id", "scan_id"]
+    }
+  }
+]

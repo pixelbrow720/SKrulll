@@ -1,0 +1,49 @@
+{
+  "scan_results": {
+    "insert": "INSERT INTO scan_results (target, scan_type, timestamp, results, status) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+    "select_by_id": "SELECT * FROM scan_results WHERE id = $1",
+    "select_by_target": "SELECT * FROM scan_results WHERE target = $1 ORDER BY timestamp DESC",
+    "select_recent": "SELECT * FROM scan_results ORDER BY timestamp DESC LIMIT $1",
+    "update_status": "UPDATE scan_results SET status = $1 WHERE id = $2",
+    "delete": "DELETE FROM scan_results WHERE id = $1"
+  },
+  "vulnerabilities": {
+    "insert": "INSERT INTO vulnerabilities (scan_id, name, severity, description, recommendation) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+    "select_by_scan": "SELECT * FROM vulnerabilities WHERE scan_id = $1",
+    "select_by_severity": "SELECT * FROM vulnerabilities WHERE severity = $1 ORDER BY id DESC",
+    "update": "UPDATE vulnerabilities SET name = $1, severity = $2, description = $3, recommendation = $4 WHERE id = $5",
+    "delete": "DELETE FROM vulnerabilities WHERE id = $1"
+  },
+  "targets": {
+    "insert": "INSERT INTO targets (name, url, description, tags) VALUES ($1, $2, $3, $4) RETURNING id",
+    "select_all": "SELECT * FROM targets ORDER BY name",
+    "select_by_id": "SELECT * FROM targets WHERE id = $1",
+    "select_by_tag": "SELECT * FROM targets WHERE $1 = ANY(tags)",
+    "update": "UPDATE targets SET name = $1, url = $2, description = $3, tags = $4 WHERE id = $5",
+    "delete": "DELETE FROM targets WHERE id = $1"
+  },
+  "users": {
+    "insert": "INSERT INTO users (username, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id",
+    "select_by_username": "SELECT * FROM users WHERE username = $1",
+    "select_by_email": "SELECT * FROM users WHERE email = $1",
+    "update_password": "UPDATE users SET password_hash = $1 WHERE id = $2",
+    "update_role": "UPDATE users SET role = $1 WHERE id = $2",
+    "delete": "DELETE FROM users WHERE id = $1"
+  },
+  "tasks": {
+    "insert": "INSERT INTO tasks (name, description, target_id, task_type, parameters, status, created_by, scheduled_time) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
+    "select_by_id": "SELECT * FROM tasks WHERE id = $1",
+    "select_by_status": "SELECT * FROM tasks WHERE status = $1 ORDER BY scheduled_time",
+    "select_by_user": "SELECT * FROM tasks WHERE created_by = $1 ORDER BY scheduled_time DESC",
+    "update_status": "UPDATE tasks SET status = $1, last_updated = NOW() WHERE id = $2",
+    "update_result": "UPDATE tasks SET result = $1, status = $2, last_updated = NOW() WHERE id = $3",
+    "delete": "DELETE FROM tasks WHERE id = $1"
+  },
+  "reports": {
+    "insert": "INSERT INTO reports (title, description, content, format, created_by, related_scans) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+    "select_by_id": "SELECT * FROM reports WHERE id = $1",
+    "select_by_user": "SELECT * FROM reports WHERE created_by = $1 ORDER BY created_at DESC",
+    "update": "UPDATE reports SET title = $1, description = $2, content = $3, format = $4, last_updated = NOW() WHERE id = $5",
+    "delete": "DELETE FROM reports WHERE id = $1"
+  }
+}

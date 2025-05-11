@@ -32,17 +32,25 @@ cryptography>=38.0.0
 paramiko>=2.11.0
 scapy>=2.4.5
 pyopenssl>=22.0.0
+python-nmap>=0.7.1
 
 # OSINT Modules
 beautifulsoup4>=4.11.0
 dnspython>=2.2.0
 python-whois>=0.7.0
 shodan>=1.28.0
+serpapi>=0.1.0
 
 # Visualization
 matplotlib>=3.5.0
 networkx>=2.8.0
 plotly>=5.10.0
+pyvis>=0.3.0
+
+# Machine Learning
+torch>=1.13.0
+transformers>=4.25.0
+tensorflow>=2.10.0
 
 # Testing
 pytest>=7.0.0

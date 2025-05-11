@@ -1,0 +1,940 @@
+{
+  "timestamp": "2025-05-11T23:31:04.193135",
+  "duration": 12.340406656265259,
+  "statistics": {
+    "total_checks": 143,
+    "total_successes": 130,
+    "total_issues": 13,
+    "critical_issues": 5,
+    "high_issues": 7,
+    "medium_issues": 1,
+    "low_issues": 0,
+    "info_issues": 0
+  },
+  "component_status": {
+    "system": {
+      "os": 0,
+      "python": 0,
+      "pip": 0
+    },
+    "config": {
+      "env_file": 0,
+      "config_yaml": 0,
+      "env_vars": 2
+    },
+    "dependencies": {
+      "python_libs": 2
+    },
+    "paths": {
+      "project_structure": 0
+    },
+    "database": {
+      "postgresql": 2,
+      "mongodb": 2,
+      "elasticsearch": 2,
+      "neo4j": 2,
+      "redis": 1
+    },
+    "modules": {
+      "imports": 0
+    },
+    "cli": {
+      "basic_commands": 0
+    },
+    "web": {
+      "app_creation": 0
+    },
+    "resources": {
+      "wordlists": 0,
+      "templates": 0
+    }
+  },
+  "issues": [
+    {
+      "component": "config",
+      "sub_component": "env_vars",
+      "severity": "CRITICAL",
+      "message": "Missing critical environment variables: DATABASE_URL, MONGODB_URI",
+      "fix_message": "Set these variables in your .env file or system environment.",
+      "timestamp": "2025-05-11T23:31:04.440330"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "severity": "HIGH",
+      "message": "Python library 'pyyaml' (import: pyyaml) is NOT installed.",
+      "fix_message": "Install with 'pip install pyyaml' or 'pip install -r requirements.txt'.",
+      "timestamp": "2025-05-11T23:31:04.449904"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "severity": "HIGH",
+      "message": "Python library 'PyJWT' (import: PyJWT) is NOT installed.",
+      "fix_message": "Install with 'pip install PyJWT' or 'pip install -r requirements.txt'.",
+      "timestamp": "2025-05-11T23:31:04.508008"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "severity": "HIGH",
+      "message": "Python library 'python-dotenv' (import: python_dotenv) is NOT installed.",
+      "fix_message": "Install with 'pip install python-dotenv' or 'pip install -r requirements.txt'.",
+      "timestamp": "2025-05-11T23:31:04.514375"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "severity": "HIGH",
+      "message": "Python library 'kafka-python' (import: kafka_python) is NOT installed.",
+      "fix_message": "Install with 'pip install kafka-python' or 'pip install -r requirements.txt'.",
+      "timestamp": "2025-05-11T23:31:04.666514"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "severity": "HIGH",
+      "message": "Python library 'pyopenssl' (import: pyopenssl) is NOT installed.",
+      "fix_message": "Install with 'pip install pyopenssl' or 'pip install -r requirements.txt'.",
+      "timestamp": "2025-05-11T23:31:04.684662"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "severity": "HIGH",
+      "message": "Python library 'python-nmap' (import: python_nmap) is NOT installed.",
+      "fix_message": "Install with 'pip install python-nmap' or 'pip install -r requirements.txt'.",
+      "timestamp": "2025-05-11T23:31:04.684723"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "severity": "HIGH",
+      "message": "Python library 'beautifulsoup4' (import: beautifulsoup4) is NOT installed.",
+      "fix_message": "Install with 'pip install beautifulsoup4' or 'pip install -r requirements.txt'.",
+      "timestamp": "2025-05-11T23:31:04.687376"
+    },
+    {
+      "component": "database",
+      "sub_component": "postgresql",
+      "severity": "CRITICAL",
+      "message": "PostgreSQL connection failed: connection to server at \"localhost\" (::1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\nconnection to server at \"localhost\" (::1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "fix_message": "Check PostgreSQL server, network, and .env configuration (DATABASE_URL or PGHOST, etc.).",
+      "timestamp": "2025-05-11T23:31:05.332843"
+    },
+    {
+      "component": "database",
+      "sub_component": "mongodb",
+      "severity": "CRITICAL",
+      "message": "MongoDB connection failed (ConnectionFailure): localhost:27017: [Errno 111] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 5.0s, Topology Description: <TopologyDescription id: 6820d0c99c0f247b0ecd11c2, topology_type: Unknown, servers: [<ServerDescription ('localhost', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('localhost:27017: [Errno 111] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>",
+      "fix_message": "Check MongoDB server, network, and .env configuration (MONGODB_URI or MONGODB_HOST, etc.).",
+      "timestamp": "2025-05-11T23:31:10.349790"
+    },
+    {
+      "component": "database",
+      "sub_component": "elasticsearch",
+      "severity": "CRITICAL",
+      "message": "Elasticsearch connection failed: Elasticsearch ping failed",
+      "fix_message": "Check Elasticsearch server, network, and .env configuration (ELASTICSEARCH_HOST, etc.).",
+      "timestamp": "2025-05-11T23:31:10.351751"
+    },
+    {
+      "component": "database",
+      "sub_component": "neo4j",
+      "severity": "CRITICAL",
+      "message": "Neo4j connection failed: Couldn't connect to localhost:7687 (resolved to ('[::1]:7687', '127.0.0.1:7687')):\nFailed to establish connection to ResolvedIPv6Address(('::1', 7687, 0, 0)) (reason [Errno 111] Connection refused)\nFailed to establish connection to ResolvedIPv4Address(('127.0.0.1', 7687)) (reason [Errno 111] Connection refused)",
+      "fix_message": "Check Neo4j server, network, and .env configuration (NEO4J_URI, etc.).",
+      "timestamp": "2025-05-11T23:31:10.353374"
+    },
+    {
+      "component": "database",
+      "sub_component": "redis",
+      "severity": "MEDIUM",
+      "message": "Redis connection failed (ConnectionError): Error 111 connecting to localhost:6379. Connection refused.",
+      "fix_message": "Check Redis server and .env configuration. This might affect caching or task scheduling if Redis is used as a backend.",
+      "timestamp": "2025-05-11T23:31:10.354487"
+    }
+  ],
+  "successes": [
+    {
+      "component": "system",
+      "sub_component": "os",
+      "message": "Operating System: Linux 6.12.12-amd64",
+      "timestamp": "2025-05-11T23:31:04.199080"
+    },
+    {
+      "component": "system",
+      "sub_component": "python",
+      "message": "Python version 3.11.2 is sufficient.",
+      "timestamp": "2025-05-11T23:31:04.199100"
+    },
+    {
+      "component": "system",
+      "sub_component": "pip",
+      "message": "Pip is installed and accessible.",
+      "timestamp": "2025-05-11T23:31:04.440109"
+    },
+    {
+      "component": "config",
+      "sub_component": "env_file",
+      "message": ".env file found at /home/liu/Documents/skrulll/.env.",
+      "timestamp": "2025-05-11T23:31:04.440254"
+    },
+    {
+      "component": "config",
+      "sub_component": "config_yaml",
+      "message": "/home/liu/Documents/skrulll/config/config.yaml found.",
+      "timestamp": "2025-05-11T23:31:04.440289"
+    },
+    {
+      "component": "config",
+      "sub_component": "env_vars",
+      "message": "All recommended environment variables are set.",
+      "timestamp": "2025-05-11T23:31:04.440344"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'click' (import: click) is installed.",
+      "timestamp": "2025-05-11T23:31:04.449664"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'requests' (import: requests) is installed.",
+      "timestamp": "2025-05-11T23:31:04.449937"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'pydantic' (import: pydantic) is installed.",
+      "timestamp": "2025-05-11T23:31:04.493952"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'email-validator' (import: email_validator) is installed.",
+      "timestamp": "2025-05-11T23:31:04.507906"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'psutil' (import: psutil) is installed.",
+      "timestamp": "2025-05-11T23:31:04.514207"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'pylint' (import: pylint) is installed.",
+      "timestamp": "2025-05-11T23:31:04.514866"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'motor' (import: motor) is installed.",
+      "timestamp": "2025-05-11T23:31:04.515254"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'pdfkit' (import: pdfkit) is installed.",
+      "timestamp": "2025-05-11T23:31:04.515811"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'flask' (import: flask) is installed.",
+      "timestamp": "2025-05-11T23:31:04.515822"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'flask-restx' (import: flask_restx) is installed.",
+      "timestamp": "2025-05-11T23:31:04.546242"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'flask-login' (import: flask_login) is installed.",
+      "timestamp": "2025-05-11T23:31:04.547790"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'flask-wtf' (import: flask_wtf) is installed.",
+      "timestamp": "2025-05-11T23:31:04.567822"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'jinja2' (import: jinja2) is installed.",
+      "timestamp": "2025-05-11T23:31:04.567850"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'werkzeug' (import: werkzeug) is installed.",
+      "timestamp": "2025-05-11T23:31:04.567856"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'sqlalchemy' (import: sqlalchemy) is installed.",
+      "timestamp": "2025-05-11T23:31:04.646687"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'pymongo' (import: pymongo) is installed.",
+      "timestamp": "2025-05-11T23:31:04.646712"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'elasticsearch' (import: elasticsearch) is installed.",
+      "timestamp": "2025-05-11T23:31:04.646718"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'elasticsearch-dsl' (import: elasticsearch_dsl) is installed.",
+      "timestamp": "2025-05-11T23:31:04.657253"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'neo4j' (import: neo4j) is installed.",
+      "timestamp": "2025-05-11T23:31:04.657281"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'psycopg2-binary' (import: psycopg2) is installed.",
+      "timestamp": "2025-05-11T23:31:04.657287"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'celery' (import: celery) is installed.",
+      "timestamp": "2025-05-11T23:31:04.658208"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'redis' (import: redis) is installed.",
+      "timestamp": "2025-05-11T23:31:04.658224"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'apscheduler' (import: apscheduler) is installed.",
+      "timestamp": "2025-05-11T23:31:04.658795"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'pika' (import: pika) is installed.",
+      "timestamp": "2025-05-11T23:31:04.666331"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'cryptography' (import: cryptography) is installed.",
+      "timestamp": "2025-05-11T23:31:04.666528"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'paramiko' (import: paramiko) is installed.",
+      "timestamp": "2025-05-11T23:31:04.684273"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'scapy' (import: scapy) is installed.",
+      "timestamp": "2025-05-11T23:31:04.684588"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'cvss' (import: cvss) is installed.",
+      "timestamp": "2025-05-11T23:31:04.686488"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'msgpack' (import: msgpack) is installed.",
+      "timestamp": "2025-05-11T23:31:04.687295"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'dnspython' (import: dns) is installed.",
+      "timestamp": "2025-05-11T23:31:04.687674"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'python-whois' (import: whois) is installed.",
+      "timestamp": "2025-05-11T23:31:04.693173"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'shodan' (import: shodan) is installed.",
+      "timestamp": "2025-05-11T23:31:04.693944"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'serpapi' (import: serpapi) is installed.",
+      "timestamp": "2025-05-11T23:31:04.697423"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'tweepy' (import: tweepy) is installed.",
+      "timestamp": "2025-05-11T23:31:04.710988"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'praw' (import: praw) is installed.",
+      "timestamp": "2025-05-11T23:31:04.731738"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'aiohttp' (import: aiohttp) is installed.",
+      "timestamp": "2025-05-11T23:31:04.731792"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'aiofiles' (import: aiofiles) is installed.",
+      "timestamp": "2025-05-11T23:31:04.733226"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'aiodns' (import: aiodns) is installed.",
+      "timestamp": "2025-05-11T23:31:04.733240"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'bandit' (import: bandit) is installed.",
+      "timestamp": "2025-05-11T23:31:04.821160"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'matplotlib' (import: matplotlib) is installed.",
+      "timestamp": "2025-05-11T23:31:04.886336"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'networkx' (import: networkx) is installed.",
+      "timestamp": "2025-05-11T23:31:04.950669"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'plotly' (import: plotly) is installed.",
+      "timestamp": "2025-05-11T23:31:04.951498"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'pyvis' (import: pyvis) is installed.",
+      "timestamp": "2025-05-11T23:31:05.191334"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'graphviz' (import: graphviz) is installed.",
+      "timestamp": "2025-05-11T23:31:05.197332"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'pytest' (import: pytest) is installed.",
+      "timestamp": "2025-05-11T23:31:05.234173"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'coverage' (import: coverage) is installed.",
+      "timestamp": "2025-05-11T23:31:05.247840"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'pytest-cov' (import: pytest_cov) is installed.",
+      "timestamp": "2025-05-11T23:31:05.248081"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'black' (import: black) is installed.",
+      "timestamp": "2025-05-11T23:31:05.285256"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'flake8' (import: flake8) is installed.",
+      "timestamp": "2025-05-11T23:31:05.285484"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'mypy' (import: mypy) is installed.",
+      "timestamp": "2025-05-11T23:31:05.295106"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'isort' (import: isort) is installed.",
+      "timestamp": "2025-05-11T23:31:05.307622"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'pre-commit' (import: pre_commit) is installed.",
+      "timestamp": "2025-05-11T23:31:05.307807"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'sphinx' (import: sphinx) is installed.",
+      "timestamp": "2025-05-11T23:31:05.308664"
+    },
+    {
+      "component": "dependencies",
+      "sub_component": "python_libs",
+      "message": "Python library 'sphinx-rtd-theme' (import: sphinx_rtd_theme) is installed.",
+      "timestamp": "2025-05-11T23:31:05.313928"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "File 'main.py' found at '/home/liu/Documents/skrulll/main.py'.",
+      "timestamp": "2025-05-11T23:31:05.314022"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "File 'requirements.txt' found at '/home/liu/Documents/skrulll/requirements.txt'.",
+      "timestamp": "2025-05-11T23:31:05.314039"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "File 'config/config.example.yaml' found at '/home/liu/Documents/skrulll/config/config.example.yaml'.",
+      "timestamp": "2025-05-11T23:31:05.314057"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "File '.env.example' found at '/home/liu/Documents/skrulll/.env.example'.",
+      "timestamp": "2025-05-11T23:31:05.314069"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'modules' found at '/home/liu/Documents/skrulll/modules'.",
+      "timestamp": "2025-05-11T23:31:05.314081"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'modules/osint' found at '/home/liu/Documents/skrulll/modules/osint'.",
+      "timestamp": "2025-05-11T23:31:05.314094"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'modules/security' found at '/home/liu/Documents/skrulll/modules/security'.",
+      "timestamp": "2025-05-11T23:31:05.314106"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'modules/vulnerability' found at '/home/liu/Documents/skrulll/modules/vulnerability'.",
+      "timestamp": "2025-05-11T23:31:05.314120"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'modules/scanner' found at '/home/liu/Documents/skrulll/modules/scanner'.",
+      "timestamp": "2025-05-11T23:31:05.314150"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'modules/scanner/domain' found at '/home/liu/Documents/skrulll/modules/scanner/domain'.",
+      "timestamp": "2025-05-11T23:31:05.314164"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'modules/scanner/netmap' found at '/home/liu/Documents/skrulll/modules/scanner/netmap'.",
+      "timestamp": "2025-05-11T23:31:05.314177"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'modules/vulnerability/api_tester' found at '/home/liu/Documents/skrulll/modules/vulnerability/api_tester'.",
+      "timestamp": "2025-05-11T23:31:05.314189"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'modules/vulnerability/exploiter/exploits' found at '/home/liu/Documents/skrulll/modules/vulnerability/exploiter/exploits'.",
+      "timestamp": "2025-05-11T23:31:05.314203"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'modules/vulnerability/templates/nuclei' found at '/home/liu/Documents/skrulll/modules/vulnerability/templates/nuclei'.",
+      "timestamp": "2025-05-11T23:31:05.314221"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'orchestrator' found at '/home/liu/Documents/skrulll/orchestrator'.",
+      "timestamp": "2025-05-11T23:31:05.314233"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'orchestrator/db' found at '/home/liu/Documents/skrulll/orchestrator/db'.",
+      "timestamp": "2025-05-11T23:31:05.314244"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'scheduler' found at '/home/liu/Documents/skrulll/scheduler'.",
+      "timestamp": "2025-05-11T23:31:05.314255"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'web' found at '/home/liu/Documents/skrulll/web'.",
+      "timestamp": "2025-05-11T23:31:05.314266"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'web/templates' found at '/home/liu/Documents/skrulll/web/templates'.",
+      "timestamp": "2025-05-11T23:31:05.314277"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'web/static' found at '/home/liu/Documents/skrulll/web/static'.",
+      "timestamp": "2025-05-11T23:31:05.314289"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'docs' found at '/home/liu/Documents/skrulll/docs'.",
+      "timestamp": "2025-05-11T23:31:05.314299"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'logs' found at '/home/liu/Documents/skrulll/logs'.",
+      "timestamp": "2025-05-11T23:31:05.314310"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'data' found at '/home/liu/Documents/skrulll/data'.",
+      "timestamp": "2025-05-11T23:31:05.314321"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'wordlists' found at '/home/liu/Documents/skrulll/wordlists'.",
+      "timestamp": "2025-05-11T23:31:05.314336"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "File 'wordlists/subdomains.txt' found at '/home/liu/Documents/skrulll/wordlists/subdomains.txt'.",
+      "timestamp": "2025-05-11T23:31:05.314353"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'queries' found at '/home/liu/Documents/skrulll/queries'.",
+      "timestamp": "2025-05-11T23:31:05.314365"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "File 'queries/postgresql_queries.json' found at '/home/liu/Documents/skrulll/queries/postgresql_queries.json'.",
+      "timestamp": "2025-05-11T23:31:05.314378"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "Directory 'templates/docker' found at '/home/liu/Documents/skrulll/templates/docker'.",
+      "timestamp": "2025-05-11T23:31:05.314390"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "File 'templates/docker-compose.yml' found at '/home/liu/Documents/skrulll/templates/docker-compose.yml'.",
+      "timestamp": "2025-05-11T23:31:05.314402"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "File 'migrations/postgresql/001_initial_schema.sql' found at '/home/liu/Documents/skrulll/migrations/postgresql/001_initial_schema.sql'.",
+      "timestamp": "2025-05-11T23:31:05.314418"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "File 'migrations/neo4j/001_initial_schema.cypher' found at '/home/liu/Documents/skrulll/migrations/neo4j/001_initial_schema.cypher'.",
+      "timestamp": "2025-05-11T23:31:05.314431"
+    },
+    {
+      "component": "paths",
+      "sub_component": "project_structure",
+      "message": "File 'config/neo4j_optimization.cypher' found at '/home/liu/Documents/skrulll/config/neo4j_optimization.cypher'.",
+      "timestamp": "2025-05-11T23:31:05.314444"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'orchestrator.cli' (path: orchestrator.cli) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.537768"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'orchestrator.config' (path: orchestrator.config) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.537788"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'orchestrator.logging_config' (path: orchestrator.logging_config) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.537905"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'orchestrator.messaging' (path: orchestrator.messaging) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.537911"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'orchestrator.db.postgresql_client' (path: orchestrator.db.postgresql_client) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.539628"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'orchestrator.db.mongodb_client' (path: orchestrator.db.mongodb_client) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.539872"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'orchestrator.db.elasticsearch_client' (path: orchestrator.db.elasticsearch_client) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.540108"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'orchestrator.db.neo4j_client' (path: orchestrator.db.neo4j_client) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.540117"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.osint.domain_recon' (path: modules.osint.domain_recon) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.540122"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.osint.social_analyzer' (path: modules.osint.social_analyzer) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.540126"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.osint.search_footprint' (path: modules.osint.search_footprint) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.540133"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.osint.aggregator' (path: modules.osint.aggregator) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.540136"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.security.vulnerability_scanner' (path: modules.security.vulnerability_scanner) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.540140"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.security.port_scanner' (path: modules.security.port_scanner) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.540144"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.security.network_mapper' (path: modules.security.network_mapper) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.540147"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.security.service_enumerator' (path: modules.security.service_enumerator) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.540151"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.security.attack_vector_mapper' (path: modules.security.attack_vector_mapper) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.540832"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.security.code_analyzer' (path: modules.security.code_analyzer) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.568517"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.security.data_leak_detector' (path: modules.security.data_leak_detector) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.576226"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.security.entry_point_analyzer' (path: modules.security.entry_point_analyzer) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.579103"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.security.reporting_system' (path: modules.security.reporting_system) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.579609"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.vulnerability.scanner.vulnerability_scanner' (path: modules.vulnerability.scanner.vulnerability_scanner) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.583713"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'modules.vulnerability.exploiter.exploit_tester' (path: modules.vulnerability.exploiter.exploit_tester) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.583734"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'scheduler.task_manager' (path: scheduler.task_manager) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.583739"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'web.app' (path: web.app) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.637637"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'web.auth' (path: web.auth) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.637652"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'web.routes' (path: web.routes) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.637656"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'web.schemas' (path: web.schemas) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.637659"
+    },
+    {
+      "component": "modules",
+      "sub_component": "imports",
+      "message": "Module 'config.optimization' (path: config.optimization) imported successfully.",
+      "timestamp": "2025-05-11T23:31:10.638262"
+    },
+    {
+      "component": "cli",
+      "sub_component": "basic_commands",
+      "message": "CLI command 'main.py --help' (CLI help) executed successfully.",
+      "timestamp": "2025-05-11T23:31:11.799380"
+    },
+    {
+      "component": "cli",
+      "sub_component": "basic_commands",
+      "message": "CLI command 'main.py osint --help' (OSINT commands help) executed successfully.",
+      "timestamp": "2025-05-11T23:31:12.969798"
+    },
+    {
+      "component": "cli",
+      "sub_component": "basic_commands",
+      "message": "CLI command 'main.py security --help' (Security commands help) executed successfully.",
+      "timestamp": "2025-05-11T23:31:14.227129"
+    },
+    {
+      "component": "cli",
+      "sub_component": "basic_commands",
+      "message": "CLI command 'main.py schedule --help' (Schedule commands help) executed successfully.",
+      "timestamp": "2025-05-11T23:31:15.380734"
+    },
+    {
+      "component": "cli",
+      "sub_component": "basic_commands",
+      "message": "CLI command 'main.py db --help' (Database commands help) executed successfully.",
+      "timestamp": "2025-05-11T23:31:16.527914"
+    },
+    {
+      "component": "web",
+      "sub_component": "app_creation",
+      "message": "Flask web application created successfully.",
+      "timestamp": "2025-05-11T23:31:16.533217"
+    },
+    {
+      "component": "resources",
+      "sub_component": "wordlists",
+      "message": "Subdomain wordlist found and is not empty.",
+      "timestamp": "2025-05-11T23:31:16.533276"
+    },
+    {
+      "component": "resources",
+      "sub_component": "templates",
+      "message": "Nuclei templates directory found and contains YAML files.",
+      "timestamp": "2025-05-11T23:31:16.533447"
+    },
+    {
+      "component": "resources",
+      "sub_component": "templates",
+      "message": "Exploit report templates directory found and contains HTML files.",
+      "timestamp": "2025-05-11T23:31:16.533549"
+    }
+  ]
+}

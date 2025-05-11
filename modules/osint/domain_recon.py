@@ -181,16 +181,33 @@ def discover_subdomains(domain: str, wordlist_path: Optional[str] = None) -> Dic
     try:
         logger.info(f"Starting subdomain discovery for {domain}")
         
+        # Default wordlist path if none specified
+        if not wordlist_path:
+            import os
+            # Use the wordlists/subdomains.txt from project root
+            default_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 
+                                       'wordlists', 'subdomains.txt')
+            if os.path.exists(default_path):
+                wordlist_path = default_path
+                logger.info(f"Using default wordlist at {default_path}")
+            else:
+                logger.warning(f"Default wordlist not found at {default_path}")
+        
         # Load wordlist
         if wordlist_path:
             try:
                 with open(wordlist_path, 'r') as f:
                     subdomains = [line.strip() for line in f if line.strip()]
+                logger.info(f"Loaded {len(subdomains)} subdomains from {wordlist_path}")
             except Exception as e:
-                logger.error(f"Error reading wordlist file: {str(e)}")
+                error_msg = f"Error reading wordlist file {wordlist_path}: {str(e)}"
+                logger.error(error_msg)
+                result["error"] = error_msg
                 subdomains = get_default_subdomain_list()
+                logger.info("Falling back to default subdomain list")
         else:
             subdomains = get_default_subdomain_list()
+            logger.info("Using built-in default subdomain list")
         
         logger.info(f"Loaded {len(subdomains)} potential subdomains to check")
         
@@ -244,7 +261,7 @@ def get_default_subdomain_list() -> List[str]:
 def investigate_domain(domain: str, 
                       perform_whois: bool = True, 
                       perform_dns: bool = True,
-                      discover_subdomains: bool = False,
+                      perform_subdomain_discovery: bool = False,
                       whois_timeout: int = 10,
                       dns_timeout: int = 5,
                       subdomain_wordlist: Optional[str] = None) -> Dict[str, Any]:
@@ -255,7 +272,7 @@ def investigate_domain(domain: str,
         domain: Domain name to investigate
         perform_whois: Whether to perform WHOIS lookup
         perform_dns: Whether to perform DNS lookups
-        discover_subdomains: Whether to discover subdomains
+        perform_subdomain_discovery: Whether to discover subdomains
         whois_timeout: Timeout for WHOIS queries
         dns_timeout: Timeout for DNS queries
         subdomain_wordlist: Path to wordlist for subdomain discovery
@@ -283,7 +300,7 @@ def investigate_domain(domain: str,
             result["dns_records"] = get_dns_records(domain, timeout=dns_timeout)
             
         # Discover subdomains if requested
-        if discover_subdomains:
+        if perform_subdomain_discovery:
             result["subdomains"] = discover_subdomains(domain, wordlist_path=subdomain_wordlist)
             
         logger.info(f"Domain reconnaissance completed for {domain}")

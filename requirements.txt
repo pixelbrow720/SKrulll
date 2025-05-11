@@ -2,11 +2,14 @@
 click>=8.0.0
 pyyaml>=6.0
 requests>=2.28.0
-pydantic
-email-validator
-jwt
-psutil
+pydantic>=1.9.0
+email-validator>=1.2.0  # Untuk web.app dan validasi email umum
+PyJWT>=2.4.0
+psutil>=5.9.0
 python-dotenv>=0.20.0
+pylint
+motor
+pdfkit
 
 # Web Interface
 flask>=2.2.0
@@ -17,15 +20,21 @@ jinja2>=3.0.0
 werkzeug>=2.2.0
 
 # Database Connectors
-sqlalchemy>=1.4.0
+sqlalchemy>=1.4.0        # Jika Anda menggunakan ORM berbasis SQL selain koneksi langsung
 pymongo>=4.2.0
-elasticsearch-dsl>=7.4.0
+elasticsearch>=7.10.0,<8.0.0 # Klien Elasticsearch, sesuaikan versi dengan server Anda
+elasticsearch-dsl>=7.4.0 # DSL tingkat tinggi untuk Elasticsearch
 neo4j>=5.0.0
+psycopg2-binary>=2.9.3   # Lebih mudah diinstal daripada psycopg2 source
 
 # Task Scheduling
-celery>=5.2.0
-redis>=4.3.0
-apscheduler>=3.9.0
+celery>=5.2.0            # Jika menggunakan Celery
+redis>=4.3.0             # Umumnya digunakan sebagai broker Celery atau untuk caching
+apscheduler>=3.9.0       # Alternatif atau pelengkap untuk Celery
+
+# Messaging (RabbitMQ/Kafka)
+pika>=1.2.0              # Untuk RabbitMQ
+kafka-python>=2.0.0      # Untuk Kafka
 
 # Security Modules
 cryptography>=38.0.0
@@ -33,6 +42,8 @@ paramiko>=2.11.0
 scapy>=2.4.5
 pyopenssl>=22.0.0
 python-nmap>=0.7.1
+cvss>=3.1                # Untuk scoring kerentanan
+msgpack>=1.0.3           # Untuk MSFRPC di exploit_tester
 
 # OSINT Modules
 beautifulsoup4>=4.11.0
@@ -40,17 +51,27 @@ dnspython>=2.2.0
 python-whois>=0.7.0
 shodan>=1.28.0
 serpapi>=0.1.0
+tweepy
+praw
+
+# Vulnerability Scanner (Advanced - aio* dependencies)
+aiohttp>=3.8.1
+aiofiles>=0.8.0
+aiodns>=3.0.0
+bandit
 
 # Visualization
 matplotlib>=3.5.0
 networkx>=2.8.0
 plotly>=5.10.0
 pyvis>=0.3.0
+graphviz>=0.20           # Paket Python untuk Graphviz
 
-# Machine Learning
-torch>=1.13.0
-transformers>=4.25.0
-tensorflow>=2.10.0
+# Machine Learning (Dependensi besar, pastikan benar-benar dibutuhkan)
+# torch>=1.13.0
+ transformers>=4.25.0
+# tensorflow>=2.10.0
+# Jika ML opsional, pertimbangkan untuk membuatnya sebagai extra_requires di setup.py
 
 # Testing
 pytest>=7.0.0

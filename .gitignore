@@ -1,1 +1,13 @@
+# Virtual Environment
 venv/
+
+# Environment Variables
+.env
+
+# Configuration
+config.yaml
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class

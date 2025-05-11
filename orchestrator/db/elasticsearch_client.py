@@ -281,6 +281,123 @@ def check_connection() -> bool:
         return False
 
 
+def initialize_indices(force: bool = False) -> bool:
+    """
+    Initialize required Elasticsearch indices with mappings.
+    
+    Args:
+        force: Force reinitialization even if indices exist
+        
+    Returns:
+        True if successful, False otherwise
+    """
+    if not ELASTICSEARCH_AVAILABLE:
+        logger.error("Cannot initialize indices: elasticsearch-py not installed")
+        return False
+    
+    try:
+        # Ensure client is initialized
+        if not check_connection():
+            if not initialize_client():
+                return False
+        
+        es = get_client()
+        
+        # Define indices and their mappings
+        indices_config = {
+            'vulnerabilities': {
+                'mappings': {
+                    'properties': {
+                        'cve_id': {'type': 'keyword'},
+                        'title': {'type': 'text'},
+                        'description': {'type': 'text'},
+                        'severity': {'type': 'keyword'},
+                        'cvss_score': {'type': 'float'},
+                        'affected_products': {'type': 'keyword'},
+                        'published_date': {'type': 'date'},
+                        'last_modified': {'type': 'date'},
+                        'references': {'type': 'keyword'},
+                        'tags': {'type': 'keyword'}
+                    }
+                }
+            },
+            'scan_results': {
+                'mappings': {
+                    'properties': {
+                        'target': {'type': 'keyword'},
+                        'scan_type': {'type': 'keyword'},
+                        'timestamp': {'type': 'date'},
+                        'findings': {'type': 'nested'},
+                        'summary': {'type': 'text'},
+                        'severity_counts': {
+                            'properties': {
+                                'critical': {'type': 'integer'},
+                                'high': {'type': 'integer'},
+                                'medium': {'type': 'integer'},
+                                'low': {'type': 'integer'},
+                                'info': {'type': 'integer'}
+                            }
+                        }
+                    }
+                }
+            },
+            'osint_data': {
+                'mappings': {
+                    'properties': {
+                        'domain': {'type': 'keyword'},
+                        'source': {'type': 'keyword'},
+                        'data_type': {'type': 'keyword'},
+                        'content': {'type': 'text'},
+                        'timestamp': {'type': 'date'},
+                        'confidence': {'type': 'float'},
+                        'metadata': {'type': 'object'}
+                    }
+                }
+            },
+            'reports': {
+                'mappings': {
+                    'properties': {
+                        'report_id': {'type': 'keyword'},
+                        'title': {'type': 'text'},
+                        'summary': {'type': 'text'},
+                        'created_at': {'type': 'date'},
+                        'updated_at': {'type': 'date'},
+                        'target': {'type': 'keyword'},
+                        'findings': {'type': 'nested'},
+                        'recommendations': {'type': 'text'},
+                        'tags': {'type': 'keyword'}
+                    }
+                }
+            }
+        }
+        
+        # Create or update indices
+        for index_name, config in indices_config.items():
+            # Check if index exists
+            index_exists = es.indices.exists(index=index_name)
+            
+            # If force is True and index exists, delete it
+            if force and index_exists:
+                logger.info(f"Deleting index {index_name} (force=True)")
+                es.indices.delete(index=index_name)
+                index_exists = False
+            
+            # Create index if it doesn't exist
+            if not index_exists:
+                logger.info(f"Creating index {index_name}")
+                es.indices.create(
+                    index=index_name,
+                    body=config
+                )
+                logger.info(f"Created index {index_name} with mappings")
+        
+        logger.info("Elasticsearch indices initialized successfully")
+        return True
+    except Exception as e:
+        logger.error(f"Error initializing Elasticsearch indices: {str(e)}", exc_info=True)
+        return False
+
+
 def close_client():
     """Close the Elasticsearch client."""
     global client

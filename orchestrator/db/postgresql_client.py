@@ -204,6 +204,63 @@ def check_connection() -> bool:
         return False
 
 
+def execute_script(script: str, force: bool = False) -> bool:
+    """
+    Execute a SQL script with multiple statements.
+    
+    Args:
+        script: SQL script string containing one or more SQL statements
+        force: Whether to force execution even if a previous error occurred
+        
+    Returns:
+        True if successful, False otherwise
+    """
+    conn = None
+    try:
+        conn = get_connection()
+        
+        # Create a cursor for executing the script
+        with conn.cursor() as cursor:
+            # Split the script into individual statements
+            # This is a simple approach; a more sophisticated parser might be needed
+            # for complex scripts with comments, nested quotes, etc.
+            statements = script.split(';')
+            
+            # Execute each statement
+            for stmt in statements:
+                stmt = stmt.strip()
+                if stmt:  # Skip empty statements
+                    try:
+                        cursor.execute(stmt)
+                        logger.debug(f"Executed SQL: {stmt[:100]}...")
+                    except Exception as e:
+                        if force:
+                            logger.warning(f"Error executing SQL (continuing due to force=True): {str(e)}")
+                        else:
+                            raise
+            
+            # Commit the transaction
+            conn.commit()
+            logger.info("SQL script executed successfully")
+            return True
+            
+    except Exception as e:
+        logger.error(f"Error executing SQL script: {str(e)}", exc_info=True)
+        
+        # Rollback if a connection exists
+        if conn:
+            try:
+                conn.rollback()
+                logger.info("Transaction rolled back due to error")
+            except Exception as rollback_error:
+                logger.error(f"Error rolling back transaction: {str(rollback_error)}")
+        
+        return False
+    finally:
+        if conn:
+            release_connection(conn)
+
+
 def close_pool():
     """Close the PostgreSQL connection pool."""
     global connection_pool

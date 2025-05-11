@@ -157,7 +157,7 @@ def osint_domain(ctx, domain, output, whois, dns, subdomains):
             domain, 
             perform_whois=whois,
             perform_dns=dns,
-            discover_subdomains=subdomains,
+            perform_subdomain_discovery=subdomains,
             whois_timeout=domain_recon_config.get('whois_timeout', 10),
             dns_timeout=domain_recon_config.get('dns_timeout', 5),
             subdomain_wordlist=domain_recon_config.get('subdomain_wordlist')
@@ -391,22 +391,29 @@ def security_portscan(ctx, target, ports, timeout, output):
             # Use default ports from config if available
             port_list = port_scanner_config.get('default_ports')
         
-        # Use the port_scanner module to perform the scan
-        results = port_scanner.scan_ports(target, port_list, timeout)
+        # Use the port_scanner module to perform the scan with scan_host for more comprehensive results
+        results = port_scanner.scan_host(target, port_list, timeout)
         
         # Display results
         click.echo(f"Port Scan Results for {target}:")
-        for port, is_open in results.items():
-            status = "Open" if is_open else "Closed"
-            click.echo(f"Port {port}: {status}")
+        for port_info in results["open_ports"]:
+            port = port_info["port"]
+            service = port_info.get("service", "Unknown")
+            click.echo(f"Port {port}: Open ({service})")
+            if "banner" in port_info:
+                click.echo(f"  Banner: {port_info['banner']}")
             
         # Save to output file if specified
         if output:
             with open(output, 'w') as f:
                 f.write(f"Port Scan Results for {target} - {datetime.now()}\n")
-                for port, is_open in results.items():
-                    status = "Open" if is_open else "Closed"
-                    f.write(f"Port {port}: {status}\n")
+                f.write(f"IP Address: {results.get('ip_address', 'Unknown')}\n\n")
+                for port_info in results["open_ports"]:
+                    port = port_info["port"]
+                    service = port_info.get("service", "Unknown")
+                    f.write(f"Port {port}: Open ({service})\n")
+                    if "banner" in port_info:
+                        f.write(f"  Banner: {port_info['banner']}\n")
             click.echo(f"Results saved to {output}")
             
         logger.info(f"Port scan completed for {target}")

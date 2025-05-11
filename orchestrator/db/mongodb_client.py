@@ -228,6 +228,83 @@ def check_connection() -> bool:
         return False
 
 
+def initialize_collections(force: bool = False) -> bool:
+    """
+    Initialize required MongoDB collections with indexes.
+    
+    Args:
+        force: Force reinitialization even if collections exist
+        
+    Returns:
+        True if successful, False otherwise
+    """
+    if not PYMONGO_AVAILABLE:
+        logger.error("Cannot initialize collections: pymongo not installed")
+        return False
+    
+    try:
+        # Ensure client is initialized
+        if not check_connection():
+            if not initialize_client():
+                return False
+        
+        # Define collections and their indexes
+        collections_config = {
+            'scan_results': [
+                pymongo.IndexModel([('target', pymongo.ASCENDING), ('timestamp', pymongo.DESCENDING)]),
+                pymongo.IndexModel([('scan_type', pymongo.ASCENDING)]),
+                pymongo.IndexModel([('severity', pymongo.ASCENDING)])
+            ],
+            'vulnerabilities': [
+                pymongo.IndexModel([('cve_id', pymongo.ASCENDING)], unique=True),
+                pymongo.IndexModel([('severity', pymongo.ASCENDING)]),
+                pymongo.IndexModel([('affected_products', pymongo.ASCENDING)])
+            ],
+            'osint_data': [
+                pymongo.IndexModel([('domain', pymongo.ASCENDING)]),
+                pymongo.IndexModel([('source', pymongo.ASCENDING)]),
+                pymongo.IndexModel([('timestamp', pymongo.DESCENDING)])
+            ],
+            'reports': [
+                pymongo.IndexModel([('report_id', pymongo.ASCENDING)], unique=True),
+                pymongo.IndexModel([('created_at', pymongo.DESCENDING)]),
+                pymongo.IndexModel([('target', pymongo.ASCENDING)])
+            ],
+            'tasks': [
+                pymongo.IndexModel([('status', pymongo.ASCENDING)]),
+                pymongo.IndexModel([('created_at', pymongo.DESCENDING)]),
+                pymongo.IndexModel([('priority', pymongo.ASCENDING)])
+            ]
+        }
+        
+        # Create collections and indexes
+        for collection_name, indexes in collections_config.items():
+            # Check if collection exists
+            collection_exists = collection_name in db.list_collection_names()
+            
+            # If force is True and collection exists, drop it
+            if force and collection_exists:
+                logger.info(f"Dropping collection {collection_name} (force=True)")
+                db.drop_collection(collection_name)
+                collection_exists = False
+            
+            # Create collection if it doesn't exist
+            if not collection_exists:
+                logger.info(f"Creating collection {collection_name}")
+                db.create_collection(collection_name)
+            
+            # Create indexes
+            collection = db[collection_name]
+            collection.create_indexes(indexes)
+            logger.info(f"Created indexes for collection {collection_name}")
+        
+        logger.info("MongoDB collections initialized successfully")
+        return True
+    except Exception as e:
+        logger.error(f"Error initializing MongoDB collections: {str(e)}", exc_info=True)
+        return False
+
+
 def close_client():
     """Close the MongoDB client."""
     global client, db

@@ -22,7 +22,7 @@ configure_logging()
 logger = logging.getLogger(__name__)
 
 # Create the Flask app for Gunicorn to use
-app = create_app(debug=os.environ.get('DEBUG', '').lower() == 'true')
+app = create_app()
 
 if __name__ == "__main__":
     try:

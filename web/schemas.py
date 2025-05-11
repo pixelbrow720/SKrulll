@@ -3,14 +3,14 @@ Schema definitions for request and response validation.
 Uses Pydantic for data validation, serialization, and documentation.
 """
 
-from typing import Dict, List, Optional, Union, Any
+from typing import Dict, List, Optional, Union, Any, Literal
 from datetime import datetime
 from pydantic import BaseModel, Field, validator, EmailStr, HttpUrl, constr
 
 
 class ErrorResponse(BaseModel):
     """Schema for error responses"""
-    status: str = Field("error", const=True)
+    status: Literal["error"]
     message: str
     code: int
     details: Optional[Dict[str, Any]] = None
@@ -18,7 +18,7 @@ class ErrorResponse(BaseModel):
 
 class SuccessResponse(BaseModel):
     """Schema for success responses"""
-    status: str = Field("success", const=True)
+    status: Literal["success"]
     message: str
     data: Optional[Dict[str, Any]] = None
 
@@ -80,7 +80,7 @@ class TaskStatusRequest(BaseModel):
 
 class UserCreate(BaseModel):
     """Schema for creating a new user"""
-    username: str = Field(..., min_length=3, max_length=50, regex=r'^[a-zA-Z0-9_-]+$')
+    username: str = Field(..., min_length=3, max_length=50, pattern=r'^[a-zA-Z0-9_-]+$')
     email: EmailStr
     password: str = Field(..., min_length=8)
     confirm_password: str

@@ -1,8 +1,11 @@
 # Core Dependencies
-python>=3.8.0
 click>=8.0.0
 pyyaml>=6.0
 requests>=2.28.0
+pydantic
+email-validator
+jwt
+psutil
 python-dotenv>=0.20.0
 
 # Web Interface

@@ -75,7 +75,9 @@ def cli_app(ctx, config, verbose, quiet, log_file):
             ctx.obj['message_broker'] = message_broker
             
             # Initialize task scheduler
-            scheduler = TaskScheduler(config=app_config.get('scheduler', {}))
+            scheduler_config = app_config.get('scheduler', {})
+            storage_path = scheduler_config.get('storage_path', None)
+            scheduler = TaskScheduler(storage_path=storage_path)
             ctx.obj['scheduler'] = scheduler
             
             logger.debug("Core services initialized")
@@ -576,7 +578,7 @@ def start_webui(ctx, host, port, debug):
         
         from web.app import create_app
         
-        app = create_app(debug=debug)
+        app = create_app()
         app.run(host=host, port=port, debug=debug)
             
     except Exception as e:
@@ -590,6 +592,99 @@ def start_webui(ctx, host, port, debug):
 def db(ctx):
     """Database management commands."""
     pass
+
+
+@db.command('init')
+@click.option('--type', '-t', type=click.Choice(['all', 'postgres', 'mongo', 'elasticsearch', 'neo4j']),
+              default='all', help='Database type to initialize')
+@click.option('--force', '-f', is_flag=True, help='Force reinitialization even if database exists')
+@click.pass_context
+def db_init(ctx, type, force):
+    """Initialize database schemas and required collections/tables."""
+    try:
+        click.echo("Initializing databases:")
+        
+        if type in ['all', 'postgres']:
+            try:
+                click.echo("Initializing PostgreSQL schema...")
+                # Read and execute SQL migration script
+                migration_path = os.path.join('migrations', 'postgresql', '001_initial_schema.sql')
+                if os.path.exists(migration_path):
+                    with open(migration_path, 'r') as f:
+                        sql_script = f.read()
+                    
+                    # Import here to avoid circular imports
+                    from orchestrator.db.postgresql_client import execute_script
+                    success = execute_script(sql_script, force=force)
+                    
+                    if success:
+                        click.echo("PostgreSQL schema initialized successfully")
+                    else:
+                        click.echo("PostgreSQL schema initialization failed")
+                else:
+                    click.echo(f"Migration file not found: {migration_path}")
+            except Exception as e:
+                logger.error(f"Error initializing PostgreSQL: {str(e)}", exc_info=True)
+                click.echo(f"Error initializing PostgreSQL: {str(e)}", err=True)
+        
+        if type in ['all', 'mongo']:
+            try:
+                click.echo("Initializing MongoDB collections...")
+                # Import here to avoid circular imports
+                from orchestrator.db.mongodb_client import initialize_collections
+                success = initialize_collections(force=force)
+                
+                if success:
+                    click.echo("MongoDB collections initialized successfully")
+                else:
+                    click.echo("MongoDB collections initialization failed")
+            except Exception as e:
+                logger.error(f"Error initializing MongoDB: {str(e)}", exc_info=True)
+                click.echo(f"Error initializing MongoDB: {str(e)}", err=True)
+        
+        if type in ['all', 'neo4j']:
+            try:
+                click.echo("Initializing Neo4j graph schema...")
+                # Read and execute Cypher migration script
+                migration_path = os.path.join('migrations', 'neo4j', '001_initial_schema.cypher')
+                if os.path.exists(migration_path):
+                    with open(migration_path, 'r') as f:
+                        cypher_script = f.read()
+                    
+                    # Import here to avoid circular imports
+                    from orchestrator.db.neo4j_client import execute_script
+                    success = execute_script(cypher_script, force=force)
+                    
+                    if success:
+                        click.echo("Neo4j schema initialized successfully")
+                    else:
+                        click.echo("Neo4j schema initialization failed")
+                else:
+                    click.echo(f"Migration file not found: {migration_path}")
+            except Exception as e:
+                logger.error(f"Error initializing Neo4j: {str(e)}", exc_info=True)
+                click.echo(f"Error initializing Neo4j: {str(e)}", err=True)
+        
+        if type in ['all', 'elasticsearch']:
+            try:
+                click.echo("Initializing Elasticsearch indices...")
+                # Import here to avoid circular imports
+                from orchestrator.db.elasticsearch_client import initialize_indices
+                success = initialize_indices(force=force)
+                
+                if success:
+                    click.echo("Elasticsearch indices initialized successfully")
+                else:
+                    click.echo("Elasticsearch indices initialization failed")
+            except Exception as e:
+                logger.error(f"Error initializing Elasticsearch: {str(e)}", exc_info=True)
+                click.echo(f"Error initializing Elasticsearch: {str(e)}", err=True)
+        
+        click.echo("Database initialization completed")
+            
+    except Exception as e:
+        logger.error(f"Error during database initialization: {str(e)}", exc_info=True)
+        click.echo(f"Error: {str(e)}", err=True)
 
 
 @db.command('status')
